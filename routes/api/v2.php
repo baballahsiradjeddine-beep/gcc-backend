@@ -6,6 +6,7 @@ use App\Http\Controllers\API\V2\NotificationControllerV2;
 use App\Http\Controllers\API\V2\ReportControllerV2;
 use App\Http\Controllers\API\V2\PurchaseControllerV2;
 use App\Http\Controllers\API\V2\SubscriptionControllerV2;
+use App\Http\Controllers\API\V2\StreakControllerV2;
 use Illuminate\Support\Facades\Route;
 
 // MENNADOS PEDADAA
@@ -20,6 +21,18 @@ Route::prefix('v2')->group(function () {
             ->middleware(['auth:sanctum', 'access'])
             ->summary('Redeem a subscription card')
             ->description('this endpoint takes the code of the card and redeems it for the user, it errors if the card is already used by the user, if its used by another user, if the user already subscribed to the same subscription so there is no need to subscribe again');
+    });
+
+    Route::prefix('streaks')->group(function () {
+        Route::get('/', [StreakControllerV2::class, 'getStreak'])
+            ->middleware(['auth:sanctum', 'access'])
+            ->summary('Get User Streak Info')
+            ->description('Returns current streak, longest, and the past 7 days activity boolean array.');
+            
+        Route::post('/ping', [StreakControllerV2::class, 'pingStreak'])
+            ->middleware(['auth:sanctum', 'access'])
+            ->summary('Increment/Ping Daily Streak')
+            ->description('Call this endpoint when the user completes a study session to increment their streak. Returns updated streak info.');
     });
 
 
