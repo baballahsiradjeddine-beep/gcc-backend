@@ -18,35 +18,6 @@ class ListUsers extends ListRecords
     {
         return [
             Actions\CreateAction::make(),
-            Actions\Action::make('send_notification_to_all_users')
-                ->label(__('custom.models.user.actions.send_custom_notification'))
-                ->icon('heroicon-o-bell')
-                ->color("warning")
-                ->disabled(true)
-                ->form([
-                    \Filament\Forms\Components\TextInput::make('title')
-                        ->label(__('custom.models.user.actions.send_custom_notification.title'))
-                        ->required()
-                        ->maxLength(255),
-                    \Filament\Forms\Components\Textarea::make('body')
-                        ->label(__('custom.models.user.actions.send_custom_notification.body'))
-                        ->required()
-                        ->maxLength(65535),
-                ])
-                ->action(function (array $data): void {
-                    // chunk and notify
-                    User::whereHas('roles', function ($q) {
-                        $q->where('name', 'student');
-                    })->chunk(100, function ($users) use ($data) {
-                        foreach ($users as $user) {
-                            $user->notify(new \App\Notifications\CustomUserNotification($data['title'], $data['body']));
-                        }
-                    });
-                    Notification::make()
-                        ->title(__('custom.models.user.notices.custom_notification_sent'))
-                        ->success()
-                        ->send();
-                })
         ];
     }
 

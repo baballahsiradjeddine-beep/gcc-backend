@@ -22,7 +22,20 @@ class CustomUserNotification extends Notification implements ShouldQueue
 
     public function via(object $notifiable): array
     {
-        return ['database'];
+        $channels = ['database'];
+        if (!empty($notifiable->fcm_token)) {
+            $channels[] = \App\Broadcasting\FCMChannel::class;
+        }
+        return $channels;
+    }
+
+    public function toFcm($notifiable)
+    {
+        return [
+            'token' => $notifiable->fcm_token,
+            'title' => $this->title,
+            'body'  => $this->body,
+        ];
     }
     public function toArray(object $notifiable): array
     {

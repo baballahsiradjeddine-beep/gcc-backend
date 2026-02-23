@@ -121,4 +121,24 @@ class NotificationControllerV2 extends BaseController
 
         return $this->sendResponse();
     }
+
+    /**
+     * Update FCM Token.
+     *
+     * This endpoint registers the device's Firebase Cloud Messaging token for the authenticated user.
+     */
+    public function updateFcmToken(Request $request)
+    {
+        $validated = $request->validate([
+            'fcm_token' => 'required|string',
+        ]);
+
+        $user = $request->user();
+        $user->fcm_token = $validated['fcm_token'];
+        $user->save();
+
+        return $this->sendResponse([
+            'message' => 'FCM Token updated successfully.'
+        ]);
+    }
 }

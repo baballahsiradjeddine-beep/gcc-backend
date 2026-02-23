@@ -62,6 +62,11 @@ Route::prefix('v2')->group(function () {
             ->middleware(['auth:sanctum', 'access'])
             ->summary("Delete Notifications")
             ->description("This endpoint deletes one or many notifications for the authenticated user.");
+            
+        Route::post("/fcm-token", [NotificationControllerV2::class, 'updateFcmToken'])
+            ->middleware(['auth:sanctum', 'access'])
+            ->summary("Update FCM Token")
+            ->description("This endpoint registers the device's Firebase Cloud Messaging token to the user.");
     });
 
     Route::prefix('settings')->group(function () {

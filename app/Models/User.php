@@ -53,6 +53,7 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasMedia,
         'division_id',
         'email_verified_at',
         'referral_source_id',
+        'fcm_token',
     ];
     // protected $with = ['subscriptionCard'];
 
