@@ -71,6 +71,10 @@ trait HasProgress
      */
     public function MaterialsProgress()
     {
+        if (!$this->division) {
+            return [];
+        }
+
         $materials = $this->division->materials()->with(['units.chapters.questions'])->get();
 
         return $materials->map(function ($material) {
@@ -95,6 +99,15 @@ trait HasProgress
      */
     public function getAllProgressData(): array
     {
+        if (!$this->division) {
+            return [
+                'materials' => [],
+                'units' => [],
+                'chapters' => [],
+                'points' => $this->calculateAllPoints(),
+            ];
+        }
+
         $subscriptionIds = $this->subscriptions->pluck('id');
 
         // Get all accessible entities
@@ -222,6 +235,16 @@ trait HasProgress
      */
     protected function calculateAllPoints(): array
     {
+        if (!$this->division) {
+            return [
+                'total' => 0,
+                'materials' => [],
+                'units' => [],
+                'chapters' => [],
+                'bonuses' => [],
+            ];
+        }
+
         $subscriptionIds = $this->subscriptions->pluck('id');
 
         // Get all accessible materials, units and chapters IDs
@@ -427,6 +450,10 @@ trait HasProgress
      */
     public function maxPoints(): int
     {
+        if (!$this->division) {
+            return 0;
+        }
+
         $subscriptionIds = $this->subscriptions->pluck('id');
 
         // Get all accessible materials with their units and chapters
