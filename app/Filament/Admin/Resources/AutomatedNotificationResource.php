@@ -62,15 +62,18 @@ class AutomatedNotificationResource extends Resource
                                 'subscription_guest_reminder' => 'تذكير بالاشتراك (للمستخدمين غير المشتركين في الباقة المدفوعة)',
                                 'leaderboard_weekly_end' => 'نهاية الأسبوع لجدول الترتيب (يُرسل مساء الجمعة للمنافسة)',
                                 'study_weekend_reminder' => 'تذكير بمراجعة نهاية الأسبوع (يُرسل صباح السبت)',
-                                'milestone_halfway' => 'إشعار إنجاز: تجاوز 50% من إجمالي نقاط المنصة',
+                                'material_progress_0' => 'مادة لم يبدأها بعد 0% (يُرسل لتشجيعه على البدأ)',
+                                'material_progress_10' => 'مادة عالق فيها 10% (يُرسل إذا درسها قليلاً ثم تركها 3 أيام)',
+                                'material_progress_50' => 'إنجاز 50% من مادة معينة (يُرسل في نفس اليوم كإحتفال بالنصف!)',
+                                'material_progress_100' => 'ختم المادة 100% (يُرسل في نفس اليوم كإحتفال بالنهاية!)',
                             ])
                             ->required(),
                         Forms\Components\TextInput::make('title')
-                            ->label('عنوان الإشعار الذي سيظهر للطالب')
+                            ->label('عنوان الإشعار الذي سيظهر للطالب (يمكنك كتابة {material_name} ليتم تبديلها باسم المادة تلقائياً)')
                             ->required()
                             ->maxLength(255),
                         Forms\Components\Textarea::make('body')
-                            ->label('نص ورسالة الإشعار')
+                            ->label('نص ورسالة الإشعار (يمكنك أيضاً كتابة {material_name} هنا)')
                             ->required()
                             ->maxLength(65535),
                         Forms\Components\FileUpload::make('image')
@@ -107,7 +110,10 @@ class AutomatedNotificationResource extends Resource
                         'subscription_guest_reminder' => 'تذكير بالاشتراك',
                         'leaderboard_weekly_end' => 'جدول الترتيب (نهاية الأسبوع)',
                         'study_weekend_reminder' => 'مراجعة نهاية الأسبوع',
-                        'milestone_halfway' => 'إنجاز 50% منصة',
+                        'material_progress_0' => 'لم يبدأ مادة (0%)',
+                        'material_progress_10' => 'عالق بمادة (10%)',
+                        'material_progress_50' => 'إنجاز نصف المادة (50%)',
+                        'material_progress_100' => 'ختم مادة (100%)',
                         default => $state,
                     }),
                 Tables\Columns\TextColumn::make('title')->label('العنوان'),
