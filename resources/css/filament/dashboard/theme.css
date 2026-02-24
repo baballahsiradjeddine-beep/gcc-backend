@@ -1,7 +1,13 @@
 @import "/vendor/filament/filament/resources/css/theme.css";
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&display=swap');
 @source '../../../../vendor/bezhansalleh/filament-language-switch/resources/views/**/*.blade.php';
 
 @config 'tailwind.config.js';
+
+html[lang="ar"],
+html[lang="ar"] * {
+    font-family: 'Cairo', sans-serif !important;
+}
 
 .fi-sidebar-header {
     /* @apply ring-0; */
@@ -15,14 +21,11 @@
     @apply bg-white dark:bg-gray-900 shadow-sm ring-1 ring-gray-950/5 dark:ring-white/10 my-1 rounded-sm;
 }
 
-.fi-btn {
-}
+.fi-btn {}
 
-.fi-badge {
-}
+.fi-badge {}
 
-.fi-body {
-}
+.fi-body {}
 
 /* fi-body fi-panel-dashboard {
 
@@ -32,10 +35,12 @@
 }
 
 /* Sleek Widgets & Cards */
-.fi-wi, .fi-ta-ctn {
+.fi-wi,
+.fi-ta-ctn {
     @apply shadow-sm ring-1 ring-slate-200/50 dark:ring-white/5 rounded-2xl !important;
     transition: all 0.2s ease-in-out;
 }
+
 .fi-wi:hover {
     @apply shadow-md;
 }
@@ -49,6 +54,7 @@
 .fi-sidebar {
     @apply bg-white dark:bg-gray-900 border-r border-slate-200 dark:border-white/5 shadow-none !important;
 }
+
 .fi-sidebar-nav {
     @apply bg-transparent shadow-none ring-0 !important;
 }
