@@ -28,17 +28,32 @@
 
 } */
 .fi-panel-dashboard {
-    @apply bg-[#eceff2] dark:bg-[#000000] !important;
+    @apply bg-slate-50 dark:bg-slate-950 !important;
 }
 
-/* .fi-ta-table>thead>tr {
-    @apply divide-x divide-gray-200 dark:divide-white/5;
+/* Sleek Widgets & Cards */
+.fi-wi, .fi-ta-ctn {
+    @apply shadow-sm ring-1 ring-slate-200/50 dark:ring-white/5 rounded-2xl !important;
+    transition: all 0.2s ease-in-out;
+}
+.fi-wi:hover {
+    @apply shadow-md;
 }
 
-.fi-ta-row {
-    @apply divide-x divide-gray-200 dark:divide-white/5;
-} */
+/* Glassmorphism Header */
+.fi-topbar {
+    @apply border-b border-transparent dark:border-white/5 shadow-sm bg-white/70 dark:bg-gray-900/70 backdrop-blur-lg !important;
+}
 
-/* .fi-ta-table>tbody {
-    @apply divide-none;
-} */
+/* Clean up sidebar */
+.fi-sidebar {
+    @apply bg-white dark:bg-gray-900 border-r border-slate-200 dark:border-white/5 shadow-none !important;
+}
+.fi-sidebar-nav {
+    @apply bg-transparent shadow-none ring-0 !important;
+}
+
+/* Styled Table Rows */
+.fi-ta-row:hover {
+    @apply bg-slate-50 dark:bg-white/5 transition-colors duration-150;
+}

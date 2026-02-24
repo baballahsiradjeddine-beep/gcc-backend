@@ -38,20 +38,19 @@ class AdminPanelProvider extends PanelProvider
             ->darkModeBrandLogo(fn() => view('components.brand-dark'))
             ->brandLogoHeight('2rem')
             ->favicon(asset(('favicon.svg')))
-            ->colors(
-                [
-                    'primary' => Color::hex('#00C4F6'),
-                    'success' => Color::hex('#12D18E'),
-                    'error' => Color::hex('#F85556'),
-                    'warning' => Color::hex('#FF9500'),
-                    'info' => Color::hex('#F037A5'),
-                    'neutral' => Color::hex('#E5E7EB'),
-                ]
-            )
+            ->colors([
+                'primary' => Color::Indigo,
+                'success' => Color::Emerald,
+                'warning' => Color::Orange,
+                'danger' => Color::Rose,
+                'info' => Color::Blue,
+                'gray' => Color::Slate,
+            ])
             ->databaseNotifications()
             ->databaseNotificationsPolling("30s")
             ->lazyLoadedDatabaseNotifications(false)
-            ->font('Poppins')
+            ->font('Outfit')
+            ->globalSearchKeyBindings(['command+k', 'ctrl+k'])
             ->discoverResources(in: app_path('Filament/Admin/Resources'), for: 'App\\Filament\\Admin\\Resources')
             ->discoverPages(in: app_path('Filament/Admin/Pages'), for: 'App\\Filament\\Admin\\Pages')
             ->pages([
