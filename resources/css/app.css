@@ -1,6 +1,10 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-.fi-sidebar {
-    background-color: "red";
+
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&display=swap');
+
+html[lang="ar"],
+html[lang="ar"] * {
+    font-family: 'Cairo', sans-serif !important;
 }
