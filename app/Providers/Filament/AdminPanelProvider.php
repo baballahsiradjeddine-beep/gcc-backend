@@ -12,6 +12,7 @@ use Filament\Pages;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
+use Filament\Support\Enums\MaxWidth;
 use Howdu\FilamentRecordSwitcher\FilamentRecordSwitcherPlugin;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
@@ -58,11 +59,11 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->discoverWidgets(in: app_path('Filament/Admin/Widgets'), for: 'App\\Filament\\Admin\\Widgets')
             ->widgets([
-                // Widgets\FilamentInfoWidget::class,
-                // Widgets\AccountWidget::class,
-                // Widgets\ReferralSourcesBarChart::class,
-                // Widgets\GeneralInfos::class,
-                // Widgets\PlatformAnalytics::class,
+                Widgets\FilamentInfoWidget::class,
+                Widgets\AccountWidget::class,
+                Widgets\ReferralSourcesBarChart::class,
+                Widgets\GeneralInfos::class,
+                Widgets\PlatformAnalytics::class,
             ])
             ->middleware([
                 EncryptCookies::class,
@@ -77,7 +78,8 @@ class AdminPanelProvider extends PanelProvider
             ])
 
             ->sidebarCollapsibleOnDesktop()
-            // ->sidebarFullyCollapsibleOnDesktop()
+            ->sidebarFullyCollapsibleOnDesktop()
+            ->maxContentWidth(MaxWidth::Full)
             ->authMiddleware([
                 Authenticate::class,
             ])->plugins([
