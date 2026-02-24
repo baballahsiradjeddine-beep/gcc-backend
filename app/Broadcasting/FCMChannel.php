@@ -21,7 +21,7 @@ class FCMChannel
 
             if (!empty($message['token'])) {
                 $userId = $notifiable->id ?? null;
-                FCMService::send($message['token'], $message['title'], $message['body'], $message['data'] ?? [], $userId);
+                FCMService::send($message['token'], $message['title'], $message['body'], $message['data'] ?? [], $userId, $message['image'] ?? null);
             }
         }
     }

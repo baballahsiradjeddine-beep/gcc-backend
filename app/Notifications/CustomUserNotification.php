@@ -13,11 +13,13 @@ class CustomUserNotification extends Notification
 
     public string $title;
     public string $body;
+    public ?string $imageUrl;
 
-    public function __construct(string $title, string $body)
+    public function __construct(string $title, string $body, ?string $imageUrl = null)
     {
         $this->title = $title;
         $this->body = $body;
+        $this->imageUrl = $imageUrl;
     }
 
     public function via(object $notifiable): array
@@ -35,6 +37,7 @@ class CustomUserNotification extends Notification
             'token' => $notifiable->fcm_token,
             'title' => $this->title,
             'body'  => $this->body,
+            'image' => $this->imageUrl,
         ];
     }
     public function toArray(object $notifiable): array
@@ -42,6 +45,7 @@ class CustomUserNotification extends Notification
         return [
             'title' => $this->title,
             'body' => $this->body,
+            'image' => $this->imageUrl,
         ];
     }
 }

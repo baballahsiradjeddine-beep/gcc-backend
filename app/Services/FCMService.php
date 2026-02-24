@@ -18,7 +18,7 @@ class FCMService
      * @param array $data Additional data payload.
      * @return bool
      */
-    public static function send(string $token, string $title, string $body, array $data = [], ?int $userId = null): bool
+    public static function send(string $token, string $title, string $body, array $data = [], ?int $userId = null, ?string $imageUrl = null): bool
     {
         try {
             $credentialsFilePath = base_path('firebase-credentials.json');
@@ -88,6 +88,26 @@ class FCMService
                     ], $data),
                 ],
             ];
+
+            if ($imageUrl) {
+                $message['message']['notification']['image'] = $imageUrl;
+                // Add specific android/apns fields if necessary, though FCM v1 generic notification.image handles it.
+                $message['message']['android'] = [
+                    'notification' => [
+                        'image' => $imageUrl
+                    ]
+                ];
+                $message['message']['apns'] = [
+                    'payload' => [
+                        'aps' => [
+                            'mutable-content' => 1,
+                        ]
+                    ],
+                    'fcm_options' => [
+                        'image' => $imageUrl
+                    ]
+                ];
+            }
 
             // Send actual notification
             $response = Http::withHeaders([

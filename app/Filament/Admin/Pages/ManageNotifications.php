@@ -57,12 +57,22 @@ class ManageNotifications extends Page implements HasForms
                         ->label('محتوى الإشعار')
                         ->required()
                         ->maxLength(65535),
+                    \Filament\Forms\Components\FileUpload::make('image')
+                        ->label('صورة الإشعار (مرفق اختياري)')
+                        ->image()
+                        ->directory('notifications')
+                        ->nullable(),
                 ])
                 ->action(function (array $data): void {
+                    $imageUrl = null;
+                    if (!empty($data['image'])) {
+                        $imageUrl = url(\Illuminate\Support\Facades\Storage::url($data['image']));
+                    }
+
                     // Send notification to all users who have an FCM token
-                    User::whereNotNull('fcm_token')->chunk(100, function ($users) use ($data) {
+                    User::whereNotNull('fcm_token')->chunk(100, function ($users) use ($data, $imageUrl) {
                         foreach ($users as $user) {
-                            $user->notify(new \App\Notifications\CustomUserNotification($data['title'], $data['body']));
+                            $user->notify(new \App\Notifications\CustomUserNotification($data['title'], $data['body'], $imageUrl));
                         }
                     });
                     
