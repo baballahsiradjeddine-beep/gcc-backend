@@ -75,7 +75,7 @@ class AppServiceProvider extends ServiceProvider
             'api_path' => 'api/v1',
             'export_path' => 'public/v1.json',
             "ui" => [
-                "title" => "Tayssir API v1",
+                "title" => "Bayan E-Learning API v1",
                 "theme" => "light",
                 'hide_schemas' => true,
                 'logo' => '/favicon.svg',
@@ -90,7 +90,7 @@ class AppServiceProvider extends ServiceProvider
             'api_path' => 'api/v2',
             'export_path' => 'public/v2.json',
             "ui" => [
-                "title" => "Tayssir API v2",
+                "title" => "Bayan E-Learning API v2",
                 "theme" => "light",
                 'hide_schemas' => true,
                 'logo' => '/favicon.svg',
