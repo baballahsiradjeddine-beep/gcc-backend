@@ -59,6 +59,10 @@ class AutomatedNotificationResource extends Resource
                                 'exam_countdown_60' => 'العد التنازلي: متبقي 60 يوماً على البكالوريا',
                                 'exam_countdown_30' => 'العد التنازلي: متبقي 30 يوماً فقط على البكالوريا',
                                 'exam_countdown_7' => 'العد التنازلي: متبقي أسبوع واحد لحلم البكالوريا!',
+                                'subscription_guest_reminder' => 'تذكير بالاشتراك (للمستخدمين غير المشتركين في الباقة المدفوعة)',
+                                'leaderboard_weekly_end' => 'نهاية الأسبوع لجدول الترتيب (يُرسل مساء الجمعة للمنافسة)',
+                                'study_weekend_reminder' => 'تذكير بمراجعة نهاية الأسبوع (يُرسل صباح السبت)',
+                                'milestone_halfway' => 'إشعار إنجاز: تجاوز 50% من إجمالي نقاط المنصة',
                             ])
                             ->required(),
                         Forms\Components\TextInput::make('title')
@@ -100,6 +104,10 @@ class AutomatedNotificationResource extends Resource
                         'exam_countdown_60' => 'عد تنازلي 60 يوم',
                         'exam_countdown_30' => 'عد تنازلي 30 يوم',
                         'exam_countdown_7' => 'عد تنازلي 7 أيام',
+                        'subscription_guest_reminder' => 'تذكير بالاشتراك',
+                        'leaderboard_weekly_end' => 'جدول الترتيب (نهاية الأسبوع)',
+                        'study_weekend_reminder' => 'مراجعة نهاية الأسبوع',
+                        'milestone_halfway' => 'إنجاز 50% منصة',
                         default => $state,
                     }),
                 Tables\Columns\TextColumn::make('title')->label('العنوان'),

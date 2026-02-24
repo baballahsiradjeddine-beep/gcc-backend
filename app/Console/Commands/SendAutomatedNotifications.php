@@ -107,6 +107,40 @@ class SendAutomatedNotifications extends Command
                     if ($daysUntilExam !== 7) continue 2;  // Skip entirely if it's not the day
                     break;
 
+                case 'subscription_guest_reminder':
+                    // Send to users who do not have any active purchased subscriptions
+                    $usersQuery->whereDoesntHave('subscription_cards', function ($q) {
+                        $q->whereHas('subscription', function ($subQ) {
+                            $subQ->where(function ($subQ2) {
+                                $subQ2->whereNull('ending_date')
+                                      ->orWhere('ending_date', '>', now());
+                            })->where('id', '!=', \App\Models\Subscription::GUEST_ID);
+                        });
+                    });
+                    break;
+
+                case 'leaderboard_weekly_end':
+                    // Check if today is Friday (end of week challenge)
+                    // Carbon isFriday() returns true on Friday
+                    if (!Carbon::today()->isFriday()) continue 2;
+                    break;
+
+                case 'study_weekend_reminder':
+                    // Check if today is Saturday morning/weekend
+                    if (!Carbon::today()->isSaturday()) continue 2;
+                    break;
+
+                case 'milestone_halfway':
+                    // User has earned 50% or more of max points but not 100% yet
+                    // Make sure we have a way to avoid spamming this every day once they cross 50%
+                    // We can check if their points exactly recently crossed 50%, or simply limit by 
+                    // users whose points are > 50% and less than 60%
+                    $usersQuery->whereHas('leaderboard', function ($q) {
+                        $q->whereRaw('points >= (max_points * 0.5)')
+                          ->whereRaw('points < (max_points * 0.6)');
+                    });
+                    break;
+
                 default:
                     // If unknown trigger, skip
                     continue 2;
