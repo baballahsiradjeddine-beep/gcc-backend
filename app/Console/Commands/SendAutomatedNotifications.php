@@ -38,8 +38,19 @@ class SendAutomatedNotifications extends Command
 
         $today = Carbon::today()->toDateString();
         $yesterday = Carbon::yesterday()->toDateString();
+        $twoDaysAgo = Carbon::now()->subDays(2)->toDateString();
         $threeDaysAgo = Carbon::now()->subDays(3)->toDateString();
         $sevenDaysAgo = Carbon::now()->subDays(7)->toDateString();
+        $fourteenDaysAgo = Carbon::now()->subDays(14)->toDateString();
+        $thirtyDaysAgo = Carbon::now()->subDays(30)->toDateString();
+        
+        // Define the baccalaureate exam date globally for the countdown notifications 
+        // Note: For real scenarios you may want this stored in a settings table, 
+        // for now we set a representative date for the typical exam time.
+        // Assuming June 8th of the current academic year.
+        $examYear = date('n') >= 9 ? date('Y') + 1 : date('Y');
+        $examDate = Carbon::createFromDate($examYear, 6, 8)->startOfDay();
+        $daysUntilExam = Carbon::today()->startOfDay()->diffInDays($examDate, false);
 
         foreach ($activeNotifications as $notification) {
             $imageUrl = null;
@@ -51,25 +62,49 @@ class SendAutomatedNotifications extends Command
 
             switch ($notification->trigger_type) {
                 case 'daily_streak_reminder':
-                    // User studied before but did NOT study today AND has an active streak
-                    // We remind them to not lose their streak
+                    // User studied before but did NOT study today AND has an active streak (>0)
                     $usersQuery->whereNotNull('last_study_date')
+                               ->where('current_streak', '>', 0)
                                ->whereDate('last_study_date', '<', $today);
+                    break;
+                    
+                case 'streak_lost_1_day':
+                    // User lost their streak. This means their last study date is exactly 2 days ago, 
+                    // meaning they missed yesterday.
+                    $usersQuery->whereNotNull('last_study_date')
+                               ->whereDate('last_study_date', '=', $twoDaysAgo);
                     break;
 
                 case 'inactive_1_day':
-                    // Exactly yesterday
                     $usersQuery->whereDate('last_study_date', '=', $yesterday);
                     break;
 
                 case 'inactive_3_days':
-                    // Exactly 3 days ago
                     $usersQuery->whereDate('last_study_date', '=', $threeDaysAgo);
                     break;
 
                 case 'inactive_7_days':
-                    // Exactly 7 days ago
                     $usersQuery->whereDate('last_study_date', '=', $sevenDaysAgo);
+                    break;
+                    
+                case 'inactive_14_days':
+                    $usersQuery->whereDate('last_study_date', '=', $fourteenDaysAgo);
+                    break;
+                    
+                case 'inactive_30_days':
+                    $usersQuery->whereDate('last_study_date', '=', $thirtyDaysAgo);
+                    break;
+                    
+                case 'exam_countdown_60':
+                    if ($daysUntilExam !== 60) continue 2; // Skip entirely if it's not the day
+                    break;
+                    
+                case 'exam_countdown_30':
+                    if ($daysUntilExam !== 30) continue 2; // Skip entirely if it's not the day
+                    break;
+                    
+                case 'exam_countdown_7':
+                    if ($daysUntilExam !== 7) continue 2;  // Skip entirely if it's not the day
                     break;
 
                 default:
