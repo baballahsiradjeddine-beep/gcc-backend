@@ -18,13 +18,21 @@ class FCMService
      * @param array $data Additional data payload.
      * @return bool
      */
-    public static function send(string $token, string $title, string $body, array $data = []): bool
+    public static function send(string $token, string $title, string $body, array $data = [], ?int $userId = null): bool
     {
         try {
             $credentialsFilePath = base_path('firebase-credentials.json');
 
             if (!file_exists($credentialsFilePath)) {
                 Log::error('FCM credentials file not found at: ' . $credentialsFilePath);
+                \App\Models\FcmLog::create([
+                    'user_id' => $userId,
+                    'token' => $token,
+                    'title' => $title,
+                    'body' => $body,
+                    'status' => 'error',
+                    'response_body' => 'FCM credentials file not found',
+                ]);
                 return false;
             }
 
@@ -34,6 +42,14 @@ class FCMService
 
             if (!$projectId) {
                 Log::error('No project_id found in firebase-credentials.json');
+                \App\Models\FcmLog::create([
+                    'user_id' => $userId,
+                    'token' => $token,
+                    'title' => $title,
+                    'body' => $body,
+                    'status' => 'error',
+                    'response_body' => 'No project_id found in credentials',
+                ]);
                 return false;
             }
 
@@ -48,6 +64,14 @@ class FCMService
 
             if (!isset($accessToken['access_token'])) {
                 Log::error('Could not get FCM access token.');
+                \App\Models\FcmLog::create([
+                    'user_id' => $userId,
+                    'token' => $token,
+                    'title' => $title,
+                    'body' => $body,
+                    'status' => 'error',
+                    'response_body' => 'Could not get access token',
+                ]);
                 return false;
             }
 
@@ -71,6 +95,17 @@ class FCMService
                 'Content-Type'  => 'application/json',
             ])->post("https://fcm.googleapis.com/v1/projects/{$projectId}/messages:send", $message);
 
+            $status = $response->successful() ? 'success' : 'error';
+            
+            \App\Models\FcmLog::create([
+                'user_id' => $userId,
+                'token' => $token,
+                'title' => $title,
+                'body' => $body,
+                'status' => $status,
+                'response_body' => $response->body(),
+            ]);
+
             if ($response->successful()) {
                 return true;
             }
@@ -79,6 +114,14 @@ class FCMService
             return false;
 
         } catch (Exception $e) {
+            \App\Models\FcmLog::create([
+                'user_id' => $userId,
+                'token' => $token,
+                'title' => $title,
+                'body' => $body,
+                'status' => 'exception',
+                'response_body' => $e->getMessage(),
+            ]);
             Log::error("FCM Exception: " . $e->getMessage());
             return false;
         }
