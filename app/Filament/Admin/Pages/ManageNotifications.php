@@ -59,10 +59,8 @@ class ManageNotifications extends Page implements HasForms
                         ->maxLength(65535),
                 ])
                 ->action(function (array $data): void {
-                    // chunk and notify
-                    User::whereHas('roles', function ($q) {
-                        $q->where('name', 'student');
-                    })->chunk(100, function ($users) use ($data) {
+                    // Send notification to all users who have an FCM token
+                    User::whereNotNull('fcm_token')->chunk(100, function ($users) use ($data) {
                         foreach ($users as $user) {
                             $user->notify(new \App\Notifications\CustomUserNotification($data['title'], $data['body']));
                         }
