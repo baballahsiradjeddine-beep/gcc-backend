@@ -43,10 +43,9 @@ class TestContentSeeder extends Seeder
 
         $unit->chapters()->syncWithoutDetaching([$chapter->id => ['sort' => 1]]);
 
-        // Attach guest subscription to material and unit and chapter so it is visible
+        // Attach guest subscription to unit and chapter so it is visible
         $guestSub = Subscription::where('id', Subscription::GUEST_ID)->first();
         if ($guestSub) {
-            $material->subscriptions()->syncWithoutDetaching([$guestSub->id]);
             $unit->subscriptions()->syncWithoutDetaching([$guestSub->id]);
             $chapter->subscriptions()->syncWithoutDetaching([$guestSub->id]);
         }
