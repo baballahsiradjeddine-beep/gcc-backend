@@ -18,7 +18,7 @@ class TestContentSeeder extends Seeder
     {
         $division = Division::firstOrCreate(
             ['name' => 'شعبة التجربة (Test Division)'],
-            ['description' => 'شعبة مخصصة لتجربة مميزات التطبيق', 'active' => true]
+            ['description' => 'شعبة مخصصة لتجربة مميزات التطبيق']
         );
 
         $material = Material::firstOrCreate(
