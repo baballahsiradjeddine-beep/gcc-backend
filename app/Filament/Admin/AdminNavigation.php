@@ -79,6 +79,12 @@ class AdminNavigation
         'group' => self::POINTS_GROUP,
     ];
 
+    public const BADGE_RESOURCE = [
+        'icon' => 'heroicon-o-sparkles',
+        'sort' => 12,
+        'group' => self::POINTS_GROUP,
+    ];
+
     public const DIVISION_RESOURCE = [
         'icon' => "heroicon-o-academic-cap",
         'sort' => 12,

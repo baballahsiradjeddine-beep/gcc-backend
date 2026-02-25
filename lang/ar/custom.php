@@ -496,6 +496,8 @@ return [
     'models.chapter_level.bonus' => 'نقاط المكافأة',
     'forms.chapter_level.create.section.infos' => 'معلومات المستوى',
     'models.chapter.level' => 'المستوى',
+    'models.badges' => 'الشارات (Badges)',
+    'models.badge' => 'شارة',
 
     // # LeaderBoard
     'models.leaderboard' => 'لوحة المتصدرين',

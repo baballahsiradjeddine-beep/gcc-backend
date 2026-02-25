@@ -11,6 +11,7 @@ use App\Traits\User\HasSubscriptions;
 use App\Traits\User\HasWilayaAndCommune;
 use App\Traits\User\InteractsWithContent;
 use App\Traits\User\IsPanelUser;
+use App\Models\Badge;
 use Carbon\Carbon;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Models\Contracts\HasAvatar;
@@ -188,5 +189,17 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasMedia,
         }
 
         return null;
+    }
+
+    public function getCurrentBadgeAttribute()
+    {
+        $points = $this->points();
+        return Badge::where('min_points', '<=', $points)
+            ->where(function ($query) use ($points) {
+                $query->where('max_points', '>=', $points)
+                    ->orWhereNull('max_points');
+            })
+            ->orderBy('min_points', 'desc')
+            ->first();
     }
 }

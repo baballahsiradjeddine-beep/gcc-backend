@@ -40,6 +40,11 @@ class ResponseController
             'division' => $user->division,
             'subscriptions' => $user->subscriptions,
             'points' => $user->points(),
+            'badge' => $user->current_badge ? [
+                'name' => $user->current_badge->name,
+                'color' => $user->current_badge->color,
+                'icon_url' => $user->current_badge->icon,
+            ] : null,
             "has_new_notifications"  => $user->unreadNotifications()->exists(),
             "new_notifications_count"  => $user->unreadNotifications()->count(),
             // 'subscribed' => $subscriptionCard && $subscriptionCard->subscription && Carbon::now()->lessThan($user->subscriptionCard->subscription->ending_date),
