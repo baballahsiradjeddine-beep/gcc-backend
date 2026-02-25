@@ -109,4 +109,14 @@ Route::prefix('v2')->group(function () {
             ->summary('Submit a contact form')
             ->description('Submits a contact form with optional subject and metadata. Auth optional; user_id is stored when available.');
     });
+
+    Route::prefix('challenges')->middleware(['auth:sanctum', 'access'])->group(function () {
+        Route::get('/questions/{unit_id}', [\App\Http\Controllers\Api\ChallengeController::class, 'getQuestions'])
+            ->summary('Get questions for a challenge')
+            ->description('Returns 12 questions based on user level in this unit');
+            
+        Route::post('/result', [\App\Http\Controllers\Api\ChallengeController::class, 'submitResult'])
+            ->summary('Submit challenge result')
+            ->description('Updates games played/won and manages level progression');
+    });
 });
