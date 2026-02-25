@@ -78,34 +78,38 @@ class ChallengeController extends BaseController
             'points_gained' => 'required|integer|min:0',
         ]);
 
-        $user = $request->user();
-        $unit_id = $request->unit_id;
-        $isWinner = $request->is_winner;
-        $pointsGained = $request->points_gained;
+        try {
+            $user = $request->user();
+            $unit_id = $request->unit_id;
+            $isWinner = $request->is_winner;
+            $pointsGained = $request->points_gained;
 
-        $progress = ChallengeProgress::firstOrCreate(
-            ['user_id' => $user->id, 'unit_id' => $unit_id],
-            ['level' => 1, 'points' => 0, 'games_played' => 0, 'games_won' => 0]
-        );
+            $progress = ChallengeProgress::firstOrCreate(
+                ['user_id' => $user->id, 'unit_id' => $unit_id],
+                ['level' => 1, 'points' => 0, 'games_played' => 0, 'games_won' => 0]
+            );
 
-        $progress->games_played += 1;
-        if ($isWinner) {
-            $progress->games_won += 1;
+            $progress->games_played += 1;
+            if ($isWinner) {
+                $progress->games_won += 1;
+            }
+
+            $progress->points += $pointsGained;
+
+            // Level Up Logic: Level = floor(wins / 3) + 1
+            $progress->level = max(1, floor($progress->games_won / 3) + 1);
+            $progress->save();
+
+            return $this->sendResponse([
+                'progress' => [
+                    'level' => $progress->level,
+                    'points' => $progress->points,
+                    'games_played' => $progress->games_played,
+                    'games_won' => $progress->games_won,
+                ]
+            ], 'تم حفظ النتيجة بنجاح');
+        } catch (\Exception $e) {
+            return $this->sendError('Server Error Details: ' . $e->getMessage() . ' | File: ' . $e->getFile() . ' | Line: ' . $e->getLine(), [], 500);
         }
-
-        $progress->points += $pointsGained;
-
-        // Level Up Logic: Level = floor(wins / 3) + 1
-        $progress->level = floor($progress->games_won / 3) + 1;
-        $progress->save();
-
-        return $this->sendResponse([
-            'progress' => [
-                'level' => $progress->level,
-                'points' => $progress->points,
-                'games_played' => $progress->games_played,
-                'games_won' => $progress->games_won,
-            ]
-        ], 'تم حفظ النتيجة بنجاح');
     }
 }
