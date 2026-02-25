@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class ChallengeProgress extends Model
 {
+    protected $table = 'challenge_progresses';
+
     protected $fillable = [
         'user_id',
         'unit_id',
