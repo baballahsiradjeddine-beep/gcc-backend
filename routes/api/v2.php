@@ -7,6 +7,7 @@ use App\Http\Controllers\API\V2\ReportControllerV2;
 use App\Http\Controllers\API\V2\PurchaseControllerV2;
 use App\Http\Controllers\API\V2\SubscriptionControllerV2;
 use App\Http\Controllers\API\V2\StreakControllerV2;
+use App\Http\Controllers\API\V2\SocialController;
 use Illuminate\Support\Facades\Route;
 
 // MENNADOS PEDADAA
@@ -118,5 +119,14 @@ Route::prefix('v2')->group(function () {
         Route::post('/result', [\App\Http\Controllers\API\ChallengeController::class, 'submitResult'])
             ->summary('Submit challenge result')
             ->description('Updates games played/won and manages level progression');
+    });
+
+    Route::prefix('social')->middleware(['auth:sanctum', 'access'])->group(function () {
+        Route::get('/search', [SocialController::class, 'searchUsers']);
+        Route::get('/friends', [SocialController::class, 'getFriends']);
+        Route::get('/requests/pending', [SocialController::class, 'getPendingRequests']);
+        Route::post('/requests/send', [SocialController::class, 'sendFriendRequest']);
+        Route::post('/requests/accept', [SocialController::class, 'acceptFriendRequest']);
+        Route::post('/requests/reject', [SocialController::class, 'rejectFriendRequest']);
     });
 });
