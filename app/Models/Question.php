@@ -97,6 +97,13 @@ class Question extends Model implements HasMedia
             ->limit(1);  // Ensure only one chapter is returned
     }
 
+    public function chapters()
+    {
+        return $this->belongsToMany(related: Chapter::class)
+            ->using(ChapterQuestion::class)
+            ->withPivot('sort');
+    }
+
     public function getChapterNameAttribute(): ?string
     {
         return $this->chapter()->first()?->name;
