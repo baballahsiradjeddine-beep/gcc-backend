@@ -361,7 +361,34 @@ trait HasProgress
             }
         }
 
-        $totalPoints += $bonusTotal;
+        // Get challenge points
+        $challengePointsRecords = \App\Models\ChallengeProgress::select('unit_id', 'points')
+            ->where('user_id', $this->id)
+            ->get();
+            
+        $challengeTotal = 0;
+        foreach ($challengePointsRecords as $challenge) {
+            $challengeTotal += $challenge->points;
+            
+            // Add challenge points to unit points
+            if (! isset($unitPoints[$challenge->unit_id])) {
+                $unitPoints[$challenge->unit_id] = 0;
+            }
+            $unitPoints[$challenge->unit_id] += $challenge->points;
+            
+            // Find material for this unit and add points
+            foreach ($materials as $material) {
+                if ($material->units->contains('id', $challenge->unit_id)) {
+                    if (! isset($materialPoints[$material->id])) {
+                        $materialPoints[$material->id] = 0;
+                    }
+                    $materialPoints[$material->id] += $challenge->points;
+                    break;
+                }
+            }
+        }
+        
+        $totalPoints += $bonusTotal + $challengeTotal;
 
         return [
             'total' => $totalPoints,
@@ -382,13 +409,16 @@ trait HasProgress
 
         $bonusPoints = UserChapterBonus::where('user_id', $this->id)
             ->sum('bonus_points');
+            
+        $challengePoints = \App\Models\ChallengeProgress::where('user_id', $this->id)
+            ->sum('points');
 
         // create or update the leader board of this user with ['user_id', 'points', 'last_updated_at']
         // and save it
         $leaderboard = LeaderBoard::updateOrCreate(
             ['user_id' => $this->id],
             [
-                'points' => $answerPoints + $bonusPoints,
+                'points' => $answerPoints + $bonusPoints + $challengePoints,
                 'last_updated_at' => now(),
             ]
         );
@@ -399,7 +429,7 @@ trait HasProgress
             $leaderboard->save();
         }
 
-        return $answerPoints + $bonusPoints;
+        return $answerPoints + $bonusPoints + $challengePoints;
     }
 
     /**
@@ -409,9 +439,15 @@ trait HasProgress
      */
     public function materialPoints($material): int
     {
-        return UserAnswer::where('user_id', $this->id)
+        $answerPoints = UserAnswer::where('user_id', $this->id)
             ->where('material_id', $material->id)
             ->sum('points_earned');
+
+        $challengePoints = \App\Models\ChallengeProgress::where('user_id', $this->id)
+            ->whereIn('unit_id', $material->units->pluck('id'))
+            ->sum('points');
+
+        return $answerPoints + $challengePoints;
     }
 
     /**
@@ -421,9 +457,15 @@ trait HasProgress
      */
     public function unitPoints($unit): int
     {
-        return UserAnswer::where('user_id', $this->id)
+        $answerPoints = UserAnswer::where('user_id', $this->id)
             ->where('unit_id', $unit->id)
             ->sum('points_earned');
+
+        $challengePoints = \App\Models\ChallengeProgress::where('user_id', $this->id)
+            ->where('unit_id', $unit->id)
+            ->sum('points');
+
+        return $answerPoints + $challengePoints;
     }
 
     /**

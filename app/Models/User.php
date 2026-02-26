@@ -119,7 +119,7 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasMedia,
             return 0.0;
         }
 
-        return ($leaderboard->points / $leaderboard->max_points) * 100;
+        return min(100, ($leaderboard->points / $leaderboard->max_points) * 100);
     }
 
     /**
