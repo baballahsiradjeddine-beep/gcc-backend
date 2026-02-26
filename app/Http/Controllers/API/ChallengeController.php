@@ -51,8 +51,7 @@ class ChallengeController extends BaseController
 
             // Standardize output
             $questions->each(function($q) {
-                try { $q->append('image'); } catch(\Exception $e) {}
-                try { $q->append('audio'); } catch(\Exception $e) {}
+                $q->append(['image', 'hint_image', 'explanation_asset']);
             });
 
             return $this->sendResponse([
