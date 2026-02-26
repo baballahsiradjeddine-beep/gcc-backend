@@ -6,6 +6,7 @@ use App\Http\Controllers\API\BaseController;
 use App\Models\Friendship;
 use App\Models\User;
 use App\Notifications\FriendRequestNotification;
+use App\Services\FCMService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Notification;
 
@@ -72,10 +73,21 @@ class SocialController extends BaseController
             'status' => 'pending',
         ]);
 
-        // Notify the receiver
+        // Notify the receiver (Database)
         $receiver = User::find($receiverId);
         if ($receiver) {
             $receiver->notify(new FriendRequestNotification($sender));
+            
+            // Push Notification (FCM)
+            if ($receiver->fcm_token) {
+                FCMService::send(
+                    $receiver->fcm_token,
+                    'طلب صداقة جديد 🤝',
+                    "أرسل لك {$sender->name} طلب صداقة جديد.",
+                    ['type' => 'friend_request', 'sender_id' => (string)$sender->id],
+                    $receiver->id
+                );
+            }
         }
 
         return $this->sendResponse($friendship, 'تم إرسال طلب الصداقة بنجاح.');
@@ -99,6 +111,18 @@ class SocialController extends BaseController
         }
 
         $friendship->update(['status' => 'accepted']);
+
+        // Notify the sender that the request was accepted
+        $sender = User::find($friendship->sender_id);
+        if ($sender && $sender->fcm_token) {
+            FCMService::send(
+                $sender->fcm_token,
+                'تم قبول طلب الصداقة 🎉',
+                "وافق {$user->name} على طلب الصداقة، أنتما الآن أصدقاء!",
+                ['type' => 'friend_accepted', 'receiver_id' => (string)$user->id],
+                $sender->id
+            );
+        }
 
         return $this->sendResponse($friendship, 'تم قبول طلب الصداقة! أنتما الآن أصدقاء 🎉');
     }
@@ -165,5 +189,39 @@ class SocialController extends BaseController
             ->get();
 
         return $this->sendResponse($requests, 'تم جلب طلبات الصداقة المعلقة.');
+    }
+
+    /**
+     * Send a challenge invitation via Push Notification.
+     */
+    public function sendChallengeInvitation(Request $request)
+    {
+        $sender = $request->user();
+        $receiverId = $request->receiver_id;
+        $unitId = $request->unit_id;
+        $courseTitle = $request->course_title;
+
+        $receiver = User::find($receiverId);
+        if (!$receiver || !$receiver->fcm_token) {
+            return $this->sendError('المنافس غير متاح حالياً لاستلام الإشعارات.', [], 404);
+        }
+
+        // Send Push Notification for Challenge
+        FCMService::send(
+            $receiver->fcm_token,
+            'تحدي جديد ⚔️',
+            "يتحداك {$sender->name} في مادة {$courseTitle}!",
+            [
+                'type' => 'challenge_invite',
+                'sender_id' => (string)$sender->id,
+                'sender_name' => $sender->name,
+                'unit_id' => (string)$unitId,
+                'course_title' => $courseTitle,
+                'screen' => 'social_challenge'
+            ],
+            $receiver->id
+        );
+
+        return $this->sendResponse(null, 'تم إرسال دعوة التحدي بنجاح.');
     }
 }

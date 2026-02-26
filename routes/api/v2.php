@@ -127,6 +127,7 @@ Route::prefix('v2')->group(function () {
         Route::get('/requests/pending', [SocialController::class, 'getPendingRequests']);
         Route::post('/requests/send', [SocialController::class, 'sendFriendRequest']);
         Route::post('/requests/accept', [SocialController::class, 'acceptFriendRequest']);
-        Route::post('/requests/reject', [SocialController::class, 'rejectFriendRequest']);
+        @Route::post('/requests/reject', [SocialController::class, 'rejectFriendRequest']);
+        Route::post('/challenge/invite', [SocialController::class, 'sendChallengeInvitation']);
     });
 });
