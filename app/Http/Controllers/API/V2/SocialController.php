@@ -217,6 +217,7 @@ class SocialController extends BaseController
                 'sender_name' => $sender->name,
                 'unit_id' => (string)$unitId,
                 'course_title' => $courseTitle,
+                'invitation_code' => $request->invitation_code, // Pass the generated code
                 'screen' => 'social_challenge'
             ],
             $receiver->id

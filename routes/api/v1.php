@@ -164,6 +164,11 @@ Route::prefix('v1')->group(function () {
         ->summary('Get banner by ID')
         ->description('This endpoint returns a specific active banner by its ID');
 
+    // App Assets Route
+    Route::get('app-assets', [\App\Http\Controllers\API\V1\AppAssetController::class, 'index'])
+        ->summary('Get dynamic app assets')
+        ->description('Returns app assets map (key -> URL/version) for smart caching.');
+
     // Summary Routes
     Route::get('summaries', [SummaryController::class, 'index'])
         ->middleware(['auth:sanctum', 'access'])
