@@ -19,7 +19,7 @@ class AppAssetController extends BaseController
             ->get()
             ->keyBy('key')
             ->map(fn ($a) => [
-                'url'     => $a->image_url,
+                'url'     => $a->image_url ? (Str::startsWith($a->image_url, 'http') ? $a->image_url : \Illuminate\Support\Facades\Storage::disk('public')->url($a->image_url)) : null,
                 'version' => $a->version_hash,
                 'label'   => $a->label,
             ]);

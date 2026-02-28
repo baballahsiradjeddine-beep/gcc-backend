@@ -24,12 +24,4 @@ class EditAppAsset extends EditRecord
             ->body('سيقوم التطبيق بتنزيل الصورة الجديدة تلقائياً عند الفتح القادم');
     }
 
-    protected function mutateFormDataBeforeSave(array $data): array
-    {
-        // If image_url is a relative path (from FileUpload), convert to full URL
-        if (isset($data['image_url']) && !str_starts_with($data['image_url'], 'http')) {
-            $data['image_url'] = Storage::disk('public')->url($data['image_url']);
-        }
-        return $data;
-    }
 }

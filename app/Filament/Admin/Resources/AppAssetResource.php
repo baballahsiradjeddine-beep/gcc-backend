@@ -72,19 +72,12 @@ class AppAssetResource extends Resource
             Section::make('الصورة')->schema([
                 FileUpload::make('image_url')
                     ->label('رفع صورة جديدة')
-                    ->image()
                     ->imagePreviewHeight('200')
                     ->disk('public')
                     ->directory('app-assets')
                     ->visibility('public')
                     ->helperText('عند رفع صورة جديدة، يتم تحديثها في التطبيق تلقائياً')
-                    ->afterStateUpdated(function ($state, $set, AppAsset $record) {
-                        // Convert stored filename to full URL
-                        if ($state) {
-                            $url = Storage::disk('public')->url('app-assets/' . $state);
-                            $set('image_url', $url);
-                        }
-                    }),
+                    ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp', 'image/svg+xml']),
 
                 Placeholder::make('version_hash')
                     ->label('رقم الإصدار')
