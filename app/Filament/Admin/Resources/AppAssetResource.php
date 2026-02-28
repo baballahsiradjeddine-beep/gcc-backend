@@ -18,6 +18,8 @@ use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Table;
+use Filament\Tables\Filters\SelectFilter;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Storage;
 
 class AppAssetResource extends Resource
@@ -136,6 +138,31 @@ class AppAssetResource extends Resource
                     ->sortable(),
             ])
             ->defaultSort('id')
+            ->filters([
+                SelectFilter::make('category')
+                    ->label('المنطقة / القسم')
+                    ->options(function () {
+                        $categories = [];
+                        foreach (AppAsset::DEFAULT_ASSETS as $key => $data) {
+                            $cat = $data['category'] ?? 'أخرى';
+                            $categories[$cat] = $cat;
+                        }
+                        return $categories;
+                    })
+                    ->query(function (Builder $query, array $data) {
+                        if (! empty($data['value'])) {
+                            $category = $data['value'];
+                            $keys = [];
+                            foreach (AppAsset::DEFAULT_ASSETS as $key => $assetData) {
+                                $cat = $assetData['category'] ?? 'أخرى';
+                                if ($cat === $category) {
+                                    $keys[] = $key;
+                                }
+                            }
+                            $query->whereIn('key', $keys);
+                        }
+                    }),
+            ])
             ->actions([
                 Tables\Actions\EditAction::make()->label('تعديل'),
             ])
