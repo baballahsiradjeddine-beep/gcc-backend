@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API\V1;
 
 use App\Http\Controllers\API\BaseController;
 use App\Models\AppAsset;
+use Illuminate\Support\Str;
 
 class AppAssetController extends BaseController
 {
