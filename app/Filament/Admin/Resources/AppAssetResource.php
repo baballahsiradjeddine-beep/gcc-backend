@@ -106,7 +106,14 @@ class AppAssetResource extends Resource
                     ->label('المفتاح')
                     ->badge()
                     ->color('gray')
-                    ->fontFamily('mono'),
+                    ->fontFamily('mono')
+                    ->hidden(),
+
+                TextColumn::make('category')
+                    ->label('المنطقة/القسم')
+                    ->badge()
+                    ->color('success')
+                    ->getStateUsing(fn (AppAsset $record) => AppAsset::DEFAULT_ASSETS[$record->key]['category'] ?? 'أخرى'),
 
                 TextColumn::make('description')
                     ->label('الوصف')
@@ -128,7 +135,7 @@ class AppAssetResource extends Resource
                     ->dateTime('d/m/Y H:i')
                     ->sortable(),
             ])
-            ->defaultSort('key')
+            ->defaultSort('id')
             ->actions([
                 Tables\Actions\EditAction::make()->label('تعديل'),
             ])

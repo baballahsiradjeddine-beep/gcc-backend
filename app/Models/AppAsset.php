@@ -64,31 +64,31 @@ class AppAsset extends Model
 
     // All known keys with default labels
     public const DEFAULT_ASSETS = [
-        self::KEY_SUBSCRIBE_BANNER    => ['label' => 'بنر الاشتراك',      'description' => 'الصورة في قسم الاشتراك في الصفحة الرئيسية'],
-        self::KEY_CHALLENGE_CHARACTER => ['label' => 'شخصية التحديات',    'description' => 'شخصية الدولفين في صفحة التحديات'],
-        self::KEY_HOME_HERO           => ['label' => 'صورة الصفحة الرئيسية', 'description' => 'صورة البطل في الصفحة الرئيسية كالشعار الترحيبي'],
-        self::KEY_EMPTY_STATE         => ['label' => 'حالة فارغة',         'description' => 'صورة تظهر عند عدم وجود بيانات'],
-        self::KEY_APP_LOGO            => ['label' => 'شعار التطبيق',       'description' => 'الشعار الرئيسي للتطبيق'],
+        self::KEY_SUBSCRIBE_BANNER    => ['category' => 'عام و رئيسية', 'label' => 'بنر الاشتراك',      'description' => 'الصورة في قسم الاشتراك في الصفحة الرئيسية'],
+        self::KEY_CHALLENGE_CHARACTER => ['category' => 'عام و رئيسية', 'label' => 'شخصية التحديات',    'description' => 'شخصية الدولفين في صفحة التحديات'],
+        self::KEY_HOME_HERO           => ['category' => 'عام و رئيسية', 'label' => 'صورة الصفحة الرئيسية', 'description' => 'صورة البطل في الصفحة الرئيسية كالشعار الترحيبي'],
+        self::KEY_EMPTY_STATE         => ['category' => 'عام و رئيسية', 'label' => 'حالة فارغة',         'description' => 'صورة تظهر عند عدم وجود بيانات'],
+        self::KEY_APP_LOGO            => ['category' => 'عام و رئيسية', 'label' => 'شعار التطبيق',       'description' => 'الشعار الرئيسي للتطبيق'],
 
-        self::KEY_TITO_AUTH           => ['label' => 'شخصية التسجيل',      'description' => 'تظهر في شاشات تسجيل الدخول وإنشاء حساب (البوردينج)'],
-        self::KEY_TITO_LOGIN_ADVICE   => ['label' => 'نصائح تسجيل الدخول', 'description' => 'الشخصية التي تقدم نصائح اثناء التحميل'],
-        self::KEY_TITO_GENERIC        => ['label' => 'تيتو الافتراضي',     'description' => 'الوجه العادي للشخصية'],
-        self::KEY_TITO_ANGRY          => ['label' => 'تيتو الغاضب/السيء',   'description' => 'يظهر عند تقييم مستوى ضعيف أو في الخطر'],
-        self::KEY_TITO_GOOD           => ['label' => 'تيتو الجيد',          'description' => 'يظهر عند مستوى التحسن الجيد وفي لوحة الأيام'],
-        self::KEY_TITO_PERFECT        => ['label' => 'تيتو الممتاز',        'description' => 'يظهر عند الوصول لمستوى متقدم (العلّامة)'],
+        self::KEY_TITO_AUTH           => ['category' => 'شخصية تيتو الأساسية', 'label' => 'شخصية التسجيل',      'description' => 'تظهر في شاشات تسجيل الدخول وإنشاء حساب (البوردينج)'],
+        self::KEY_TITO_LOGIN_ADVICE   => ['category' => 'شخصية تيتو الأساسية', 'label' => 'نصائح تسجيل الدخول', 'description' => 'الشخصية التي تقدم نصائح اثناء التحميل'],
+        self::KEY_TITO_GENERIC        => ['category' => 'شخصية تيتو الأساسية', 'label' => 'تيتو الافتراضي',     'description' => 'الوجه العادي للشخصية'],
+        self::KEY_TITO_ANGRY          => ['category' => 'شخصية تيتو الأساسية', 'label' => 'تيتو الغاضب/السيء',   'description' => 'يظهر عند تقييم مستوى ضعيف أو في الخطر'],
+        self::KEY_TITO_GOOD           => ['category' => 'شخصية تيتو الأساسية', 'label' => 'تيتو الجيد',          'description' => 'يظهر عند مستوى التحسن الجيد وفي لوحة الأيام'],
+        self::KEY_TITO_PERFECT        => ['category' => 'شخصية تيتو الأساسية', 'label' => 'تيتو الممتاز',        'description' => 'يظهر عند الوصول لمستوى متقدم (العلّامة)'],
 
-        self::KEY_TITO_GOOD_EXERCISE  => ['label' => 'نتيجة تمرين ممتاز',  'description' => 'الصورة بعد إنهاء الأسئلة بنتيجة عالية'],
-        self::KEY_TITO_BAD_MESSAGE    => ['label' => 'نتيجة تمرين سيئة',   'description' => 'الصورة التي تخبرك بدرجة سيئة'],
-        self::KEY_TITO_BAD            => ['label' => 'تمرين رسوب',        'description' => 'رسوب تام بالتمرين'],
-        self::KEY_TITO_AVERAGE        => ['label' => 'تمرين متوسط',       'description' => 'النتيجة متوسطة بالتمارين'],
-        self::KEY_TITO_AVERAGE_MESSAGE=> ['label' => 'رسالة تمرين متوسط', 'description' => 'رسالة إضافية للمتوسط'],
+        self::KEY_TITO_GOOD_EXERCISE  => ['category' => 'التمارين والأسئلة', 'label' => 'نتيجة تمرين ممتاز',  'description' => 'الصورة بعد إنهاء الأسئلة بنتيجة عالية'],
+        self::KEY_TITO_BAD_MESSAGE    => ['category' => 'التمارين والأسئلة', 'label' => 'نتيجة تمرين سيئة',   'description' => 'الصورة التي تخبرك بدرجة سيئة'],
+        self::KEY_TITO_BAD            => ['category' => 'التمارين والأسئلة', 'label' => 'تمرين رسوب',        'description' => 'رسوب تام بالتمرين'],
+        self::KEY_TITO_AVERAGE        => ['category' => 'التمارين والأسئلة', 'label' => 'تمرين متوسط',       'description' => 'النتيجة متوسطة بالتمارين'],
+        self::KEY_TITO_AVERAGE_MESSAGE=> ['category' => 'التمارين والأسئلة', 'label' => 'رسالة تمرين متوسط', 'description' => 'رسالة إضافية للمتوسط'],
 
-        self::KEY_TITO_POMODORO_FIRST => ['label' => 'بومودورو (بداية)',  'description' => 'شخصية بومودورو للبدء'],
-        self::KEY_TITO_POMODORO_STOP  => ['label' => 'بومودورو (توقف)',   'description' => 'شخصية بومودورو عند التوقف'],
-        self::KEY_TITO_POMODORO_DONE  => ['label' => 'بومودورو (انتهاء)', 'description' => 'شخصية بومودورو عند الانتهاء'],
+        self::KEY_TITO_POMODORO_FIRST => ['category' => 'وقت الدراسة (البومودورو)', 'label' => 'بومودورو (بداية)',  'description' => 'شخصية بومودورو للبدء'],
+        self::KEY_TITO_POMODORO_STOP  => ['category' => 'وقت الدراسة (البومودورو)', 'label' => 'بومودورو (توقف)',   'description' => 'شخصية بومودورو عند التوقف'],
+        self::KEY_TITO_POMODORO_DONE  => ['category' => 'وقت الدراسة (البومودورو)', 'label' => 'بومودورو (انتهاء)', 'description' => 'شخصية بومودورو عند الانتهاء'],
 
-        self::KEY_TITO_SUB_PENDING    => ['label' => 'الدفع (قيد الانتظار)','description' => 'الصورة في التنبيهات حول انتظار التأكيد'],
-        self::KEY_TITO_SUB_FAILURE    => ['label' => 'الدفع (فشل)',        'description' => 'تنبيه حول فشل الاشتراك'],
-        self::KEY_TITO_SUB_GOOD       => ['label' => 'الدفع (اكتمل بنجاح)','description' => 'تنبيه نجاح تفعيل الاشتراك'],
+        self::KEY_TITO_SUB_PENDING    => ['category' => 'الاشتراكات والدفع', 'label' => 'الدفع (قيد الانتظار)','description' => 'الصورة في التنبيهات حول انتظار التأكيد'],
+        self::KEY_TITO_SUB_FAILURE    => ['category' => 'الاشتراكات والدفع', 'label' => 'الدفع (فشل)',        'description' => 'تنبيه حول فشل الاشتراك'],
+        self::KEY_TITO_SUB_GOOD       => ['category' => 'الاشتراكات والدفع', 'label' => 'الدفع (اكتمل بنجاح)','description' => 'تنبيه نجاح تفعيل الاشتراك'],
     ];
 }
