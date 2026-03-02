@@ -9,6 +9,7 @@ use Filament\Forms\Components\Tabs;
 use Filament\Forms\Components\Tabs\Tab;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Form;
 use Filament\Pages\SettingsPage;
 use Illuminate\Support\Facades\Lang;
@@ -77,6 +78,29 @@ class ManageAppSettings extends SettingsPage
                                 Toggle::make('chargily_payment_active')
                                     ->required()
                     ->label(Lang::get('custom.settings.payment.chargily_active')),
+                            ]),
+                        Tab::make('الجولة التجريبية')
+                            ->schema([
+                                FileUpload::make('tour_material_grid_image')
+                                    ->label('صورة المادة (الشبكة - Grid)')
+                                    ->image()
+                                    ->directory('tour')
+                                    ->preserveFilenames(),
+                                FileUpload::make('tour_material_list_image')
+                                    ->label('صورة المادة (القائمة - List)')
+                                    ->image()
+                                    ->directory('tour')
+                                    ->preserveFilenames(),
+                                FileUpload::make('tour_unit_image')
+                                    ->label('صورة المحور (Unit)')
+                                    ->image()
+                                    ->directory('tour')
+                                    ->preserveFilenames(),
+                                FileUpload::make('tour_chapter_image')
+                                    ->label('صورة الدرس (Chapter)')
+                                    ->image()
+                                    ->directory('tour')
+                                    ->preserveFilenames(),
                             ]),
                     ]),
             ]);

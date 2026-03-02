@@ -27,6 +27,10 @@ class AppSettingsControllerV2 extends BaseController
             'payment_number' => app(AppSettings::class)->payment_number,
             'payment_active' => app(AppSettings::class)->payment_active,
             'chargily_payment_active' => app(AppSettings::class)->chargily_payment_active,
+            'tour_material_grid_image' => app(AppSettings::class)->tour_material_grid_image,
+            'tour_material_list_image' => app(AppSettings::class)->tour_material_list_image,
+            'tour_unit_image' => app(AppSettings::class)->tour_unit_image,
+            'tour_chapter_image' => app(AppSettings::class)->tour_chapter_image,
         ]);
     }
 
@@ -50,6 +54,12 @@ class AppSettingsControllerV2 extends BaseController
                 'payment_active' => app(AppSettings::class)->payment_active,
                 'chargily_payment_active' => app(AppSettings::class)->chargily_payment_active,
             ],
+            'tour' => [
+                'tour_material_grid_image' => app(AppSettings::class)->tour_material_grid_image,
+                'tour_material_list_image' => app(AppSettings::class)->tour_material_list_image,
+                'tour_unit_image' => app(AppSettings::class)->tour_unit_image,
+                'tour_chapter_image' => app(AppSettings::class)->tour_chapter_image,
+            ]
         ]);
     }
 }
