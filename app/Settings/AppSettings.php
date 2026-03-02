@@ -37,6 +37,18 @@ class AppSettings extends Settings
     public string $tito_welcome_message;
 
     public string $tito_api_key;
+    
+    public string $tito_qa_list; // JSON array of questions
+
+    public string $tito_app_goal;
+
+    public string $tito_subscription_price;
+
+    public string $tito_available_materials;
+
+    public string $tito_social_links;
+
+    public bool $tito_strict_mode; // To filter non-educational questions
 
     public static function group(): string
     {

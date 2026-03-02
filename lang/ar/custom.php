@@ -618,6 +618,13 @@ return [
     'settings.tito.active' => 'تفعيل تيتو',
     'settings.tito.persona' => 'شخصية تيتو (التعليمات والبيانات)',
     'settings.tito.welcome_message' => 'رسالة الترحيب الأولى',
-    'settings.tito.api_key' => 'مفتاح Gemini API',
+    'settings.tito.api_key' => 'مفتاح API الخاص بـ Gemini',
+    'settings.tito.qa_list' => 'قائمة الأسئلة الشائعة (Quick Questions)',
+    'settings.tito.app_goal' => 'هدف التطبيق',
+    'settings.tito.subscription_price' => 'سعر الاشتراك',
+    'settings.tito.available_materials' => 'المواد المتاحة',
+    'settings.tito.social_links' => 'روابط ومواقع التواصل',
+    'settings.tito.strict_mode' => 'منع الأسئلة خارج نطاق الدراسة',
+    'settings.tito.strict_mode_hint' => 'تفعيل هذا الخيار سيجعل تيتو يرفض الإجابة عن أي سؤال غير تعليمي.',
 
 ];

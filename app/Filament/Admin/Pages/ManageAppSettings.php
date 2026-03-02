@@ -104,22 +104,46 @@ class ManageAppSettings extends SettingsPage
                             ]),
                         Tab::make(Lang::get('custom.settings.tito.title'))
                             ->schema([
-                                Toggle::make('tito_active')
-                                    ->required()
-                                    ->label(Lang::get('custom.settings.tito.active')),
-                                TextInput::make('tito_api_key')
-                                    ->required()
-                                    ->password()
-                                    ->revealable()
-                                    ->label(Lang::get('custom.settings.tito.api_key')),
-                                TextInput::make('tito_welcome_message')
-                                    ->required()
-                                    ->label(Lang::get('custom.settings.tito.welcome_message')),
-                                \Filament\Forms\Components\Textarea::make('tito_persona')
-                                    ->required()
-                                    ->rows(15)
-                                    ->columnSpanFull()
-                                    ->label(Lang::get('custom.settings.tito.persona')),
+                                Section::make('إعدادات الاتصال')
+                                    ->schema([
+                                        Toggle::make('tito_active')
+                                            ->required()
+                                            ->label(Lang::get('custom.settings.tito.active')),
+                                        TextInput::make('tito_api_key')
+                                            ->password()
+                                            ->revealable()
+                                            ->label(Lang::get('custom.settings.tito.api_key')),
+                                        Toggle::make('tito_strict_mode')
+                                            ->label(Lang::get('custom.settings.tito.strict_mode'))
+                                            ->helperText(Lang::get('custom.settings.tito.strict_mode_hint')),
+                                    ])->columns(2),
+
+                                Section::make('محتوى المساعد')
+                                    ->schema([
+                                        TextInput::make('tito_welcome_message')
+                                            ->required()
+                                            ->label(Lang::get('custom.settings.tito.welcome_message')),
+                                        \Filament\Forms\Components\TagsInput::make('tito_qa_list')
+                                            ->label(Lang::get('custom.settings.tito.qa_list'))
+                                            ->placeholder('أضف سؤالاً واضغط Enter'),
+                                        TextInput::make('tito_app_goal')
+                                            ->label(Lang::get('custom.settings.tito.app_goal')),
+                                        TextInput::make('tito_subscription_price')
+                                            ->label(Lang::get('custom.settings.tito.subscription_price')),
+                                        TextInput::make('tito_available_materials')
+                                            ->label(Lang::get('custom.settings.tito.available_materials')),
+                                        TextInput::make('tito_social_links')
+                                            ->label(Lang::get('custom.settings.tito.social_links')),
+                                    ]),
+
+                                Section::make('التعليمات المتقدمة')
+                                    ->schema([
+                                        \Filament\Forms\Components\Textarea::make('tito_persona')
+                                            ->required()
+                                            ->rows(10)
+                                            ->columnSpanFull()
+                                            ->label(Lang::get('custom.settings.tito.persona')),
+                                    ]),
                             ]),
                     ]),
             ]);
