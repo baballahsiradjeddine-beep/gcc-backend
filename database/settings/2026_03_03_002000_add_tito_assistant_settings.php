@@ -21,6 +21,6 @@ return new class extends SettingsMigration
 - كن مختصراً ومفيداً وشجع الطالب دائماً (برافو، راكم قدها).
 - إذا سأل عن شيء لا تعرفه، وجهه للتواصل مع الدعم الفني.');
         $this->migrator->add('default.tito_welcome_message', 'أهلاً بك يا بطل! أنا تيتو، كيفاش نقدر نعاونك اليوم بخصوص قرايتك أو اشتراكك؟ 🐬✨');
-        $this->migrator->add('default.tito_api_key', 'AIzaSyB5OCh3aznvxY9aAOiHA4yXSG4xvCPp0uI');
+        $this->migrator->add('default.tito_api_key', '');
     }
 };
