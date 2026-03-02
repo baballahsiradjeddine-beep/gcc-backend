@@ -31,6 +31,10 @@ class AppSettingsControllerV2 extends BaseController
             'tour_material_list_image' => app(AppSettings::class)->tour_material_list_image,
             'tour_unit_image' => app(AppSettings::class)->tour_unit_image,
             'tour_chapter_image' => app(AppSettings::class)->tour_chapter_image,
+            'tito_active' => app(AppSettings::class)->tito_active,
+            'tito_persona' => app(AppSettings::class)->tito_persona,
+            'tito_welcome_message' => app(AppSettings::class)->tito_welcome_message,
+            'tito_api_key' => app(AppSettings::class)->tito_api_key,
         ]);
     }
 
@@ -59,6 +63,12 @@ class AppSettingsControllerV2 extends BaseController
                 'tour_material_list_image' => app(AppSettings::class)->tour_material_list_image,
                 'tour_unit_image' => app(AppSettings::class)->tour_unit_image,
                 'tour_chapter_image' => app(AppSettings::class)->tour_chapter_image,
+            ],
+            'tito' => [
+                'tito_active' => app(AppSettings::class)->tito_active,
+                'tito_persona' => app(AppSettings::class)->tito_persona,
+                'tito_welcome_message' => app(AppSettings::class)->tito_welcome_message,
+                'tito_api_key' => app(AppSettings::class)->tito_api_key,
             ]
         ]);
     }

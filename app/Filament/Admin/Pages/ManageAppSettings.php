@@ -102,6 +102,25 @@ class ManageAppSettings extends SettingsPage
                                     ->directory('tour')
                                     ->preserveFilenames(),
                             ]),
+                        Tab::make(Lang::get('custom.settings.tito.title'))
+                            ->schema([
+                                Toggle::make('tito_active')
+                                    ->required()
+                                    ->label(Lang::get('custom.settings.tito.active')),
+                                TextInput::make('tito_api_key')
+                                    ->required()
+                                    ->password()
+                                    ->revealable()
+                                    ->label(Lang::get('custom.settings.tito.api_key')),
+                                TextInput::make('tito_welcome_message')
+                                    ->required()
+                                    ->label(Lang::get('custom.settings.tito.welcome_message')),
+                                \Filament\Forms\Components\Textarea::make('tito_persona')
+                                    ->required()
+                                    ->rows(15)
+                                    ->columnSpanFull()
+                                    ->label(Lang::get('custom.settings.tito.persona')),
+                            ]),
                     ]),
             ]);
     }

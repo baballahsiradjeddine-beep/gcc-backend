@@ -612,4 +612,12 @@ return [
     'models.user.actions.remove_subscription.confirm_description' => 'سيتم إزالة هذا الاشتراك من المستخدم عبر حذف بطاقة الاشتراك الخاصة به. هل تريد المتابعة؟',
     'models.user.notices.subscription_removed' => 'تمت إزالة الاشتراك بنجاح',
 
+    // # Tito AI Settings
+    'settings.tito.title' => 'مساعد تيتو الذكي',
+    'settings.tito.section.information' => 'إعدادات المساعد الذكي',
+    'settings.tito.active' => 'تفعيل تيتو',
+    'settings.tito.persona' => 'شخصية تيتو (التعليمات والبيانات)',
+    'settings.tito.welcome_message' => 'رسالة الترحيب الأولى',
+    'settings.tito.api_key' => 'مفتاح Gemini API',
+
 ];

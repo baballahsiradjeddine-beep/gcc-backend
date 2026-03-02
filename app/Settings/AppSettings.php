@@ -29,6 +29,14 @@ class AppSettings extends Settings
     public string $tour_unit_image;
 
     public string $tour_chapter_image;
+    
+    public bool $tito_active;
+
+    public string $tito_persona;
+
+    public string $tito_welcome_message;
+
+    public string $tito_api_key;
 
     public static function group(): string
     {

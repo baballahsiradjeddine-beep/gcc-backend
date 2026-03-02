@@ -21,6 +21,10 @@ class AppSettingsController extends BaseController
             'resumes_active' => app(AppSettings::class)->resumes_active,
             'bac_solutions_active' => app(AppSettings::class)->bac_solutions_active,
             'cards_tools_active' => app(AppSettings::class)->cards_tools_active,
+            'tito_active' => app(AppSettings::class)->tito_active,
+            'tito_persona' => app(AppSettings::class)->tito_persona,
+            'tito_welcome_message' => app(AppSettings::class)->tito_welcome_message,
+            'tito_api_key' => app(AppSettings::class)->tito_api_key,
         ]);
     }
 }
