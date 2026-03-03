@@ -130,7 +130,14 @@ class ManageAppSettings extends SettingsPage
                                                 \Filament\Forms\Components\Textarea::make('value')->label('الإجابة التلقائية')->required()->rows(2),
                                             ])
                                             ->columnSpanFull()
+                                            ->default([])
                                             ->itemLabel(fn (array $state): ?string => $state['label'] ?? null)
+                                            ->formatStateUsing(function ($state) {
+                                                if (is_string($state)) {
+                                                    return json_decode($state, true) ?? [];
+                                                }
+                                                return $state ?? [];
+                                            })
                                             ->afterStateHydrated(function ($component, $state) {
                                                 if (is_string($state)) {
                                                     $component->state(json_decode($state, true) ?? []);
