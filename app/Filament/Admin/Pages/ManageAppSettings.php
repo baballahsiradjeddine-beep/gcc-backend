@@ -123,9 +123,14 @@ class ManageAppSettings extends SettingsPage
                                         TextInput::make('tito_welcome_message')
                                             ->required()
                                             ->label(Lang::get('custom.settings.tito.welcome_message')),
-                                        \Filament\Forms\Components\TagsInput::make('tito_qa_list')
-                                            ->label(Lang::get('custom.settings.tito.qa_list'))
-                                            ->placeholder('أضف سؤالاً واضغط Enter'),
+                                        \Filament\Forms\Components\Repeater::make('tito_qa_list')
+                                            ->label('قائمة الأسئلة السريعة')
+                                            ->schema([
+                                                TextInput::make('label')->label('نص الزر (السؤال)')->required(),
+                                                \Filament\Forms\Components\Textarea::make('value')->label('الإجابة التلقائية')->required()->rows(2),
+                                            ])
+                                            ->columnSpanFull()
+                                            ->itemLabel(fn (array $state): ?string => $state['label'] ?? null),
                                         TextInput::make('tito_app_goal')
                                             ->label(Lang::get('custom.settings.tito.app_goal')),
                                         TextInput::make('tito_subscription_price')
