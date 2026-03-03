@@ -38,7 +38,7 @@ class AppSettings extends Settings
 
     public string $tito_api_key;
     
-    public $tito_qa_list; // Can be string (legacy) or array (new)
+    public array $tito_qa_list; // array of {label: string, value: string} pairs
 
     public string $tito_app_goal;
 
