@@ -83,6 +83,17 @@ class AnswerSubmissionService
                         'created_at' => $now,
                         'updated_at' => $now,
                     ];
+                } else {
+                    // Record mistake for review system
+                    \App\Models\UserMistake::updateOrCreate(
+                        ['user_id' => $user->id, 'question_id' => $questionId],
+                        [
+                            'last_mistake_at' => $now,
+                            'next_review_at' => $now->copy()->addDay()->startOfDay(), // Schedule for tomorrow
+                            'mistake_count' => DB::raw('mistake_count + 1'),
+                            'mastery_level' => DB::raw('GREATEST(0, mastery_level - 10)'), // Decrease mastery
+                        ]
+                    );
                 }
             }
 

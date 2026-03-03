@@ -141,6 +141,12 @@ Route::prefix('v1')->group(function () {
             ->summary('Submit chapter answers')
             ->description('This endpoint submits the answers of a chapter.');
     });
+    Route::prefix('review')->middleware(['auth:sanctum', 'access'])->group(function () {
+        Route::get('/today', [\App\Http\Controllers\API\V1\ReviewController::class, 'getTodayReview'])
+            ->summary('Questions for review today');
+        Route::post('/submit', [\App\Http\Controllers\API\V1\ReviewController::class, 'submitReview'])
+            ->summary('Submit review results');
+    });
     Route::prefix('leaderboard')->group(function () {
         Route::get('/', [LeaderBoardController::class, 'index'])
             ->middleware(['auth:sanctum', 'access'])
