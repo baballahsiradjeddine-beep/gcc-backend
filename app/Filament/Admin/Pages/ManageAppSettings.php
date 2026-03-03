@@ -130,7 +130,13 @@ class ManageAppSettings extends SettingsPage
                                                 \Filament\Forms\Components\Textarea::make('value')->label('الإجابة التلقائية')->required()->rows(2),
                                             ])
                                             ->columnSpanFull()
-                                            ->itemLabel(fn (array $state): ?string => $state['label'] ?? null),
+                                            ->itemLabel(fn (array $state): ?string => $state['label'] ?? null)
+                                            ->afterStateHydrated(function ($component, $state) {
+                                                if (is_string($state)) {
+                                                    $component->state(json_decode($state, true) ?? []);
+                                                }
+                                            })
+                                            ->dehydrateStateUsing(fn ($state) => $state),
                                         TextInput::make('tito_app_goal')
                                             ->label(Lang::get('custom.settings.tito.app_goal')),
                                         TextInput::make('tito_subscription_price')

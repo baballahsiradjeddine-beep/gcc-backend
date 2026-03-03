@@ -38,7 +38,7 @@ class AppSettings extends Settings
 
     public string $tito_api_key;
     
-    public array $tito_qa_list; // array of {label: string, value: string} pairs
+    public $tito_qa_list; // Can be string (legacy) or array (new)
 
     public string $tito_app_goal;
 
@@ -53,12 +53,5 @@ class AppSettings extends Settings
     public static function group(): string
     {
         return 'default';
-    }
-
-    public static function casts(): array
-    {
-        return [
-            'tito_qa_list' => \Spatie\LaravelSettings\SettingsCasts\ArraySettingsCast::class,
-        ];
     }
 }
