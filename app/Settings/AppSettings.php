@@ -54,4 +54,11 @@ class AppSettings extends Settings
     {
         return 'default';
     }
+
+    public static function casts(): array
+    {
+        return [
+            'tito_qa_list' => \Spatie\LaravelSettings\SettingsCasts\ArraySettingsCast::class,
+        ];
+    }
 }
