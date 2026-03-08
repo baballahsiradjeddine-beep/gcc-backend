@@ -50,6 +50,20 @@ class AppSettings extends Settings
 
     public bool $tito_strict_mode; // To filter non-educational questions
 
+    // Tool Images
+    public string $tool_cards_grid;
+    public string $tool_cards_list;
+    public string $tool_resumes_grid;
+    public string $tool_resumes_list;
+    public string $tool_bac_solutions_grid;
+    public string $tool_bac_solutions_list;
+    public string $tool_pomodoro_grid;
+    public string $tool_pomodoro_list;
+    public string $tool_grade_calc_grid;
+    public string $tool_grade_calc_list;
+    public string $tool_ai_planner_grid;
+    public string $tool_ai_planner_list;
+
     public static function group(): string
     {
         return 'default';

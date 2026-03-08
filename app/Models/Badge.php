@@ -24,4 +24,15 @@ class Badge extends Model implements HasMedia
     {
         return $this->getFirstMediaUrl('badge_icon');
     }
+
+    public static function getByPoints(int $points)
+    {
+        return self::where('min_points', '<=', $points)
+            ->where(function ($query) use ($points) {
+                $query->where('max_points', '>=', $points)
+                    ->orWhereNull('max_points');
+            })
+            ->orderBy('min_points', 'desc')
+            ->first();
+    }
 }

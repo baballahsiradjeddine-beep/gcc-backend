@@ -163,6 +163,39 @@ class ManageAppSettings extends SettingsPage
                                             ->label(Lang::get('custom.settings.tito.persona')),
                                     ]),
                             ]),
+                        Tab::make('صور الأدوات')
+                            ->schema([
+                                Section::make('بطاقات بيان')
+                                    ->schema([
+                                        FileUpload::make('tool_cards_grid')->label('صورة الشبكة')->image()->directory('tools')->preserveFilenames(),
+                                        FileUpload::make('tool_cards_list')->label('صورة القائمة')->image()->directory('tools')->preserveFilenames(),
+                                    ])->columns(2),
+                                Section::make('ملخصات و مراجعات')
+                                    ->schema([
+                                        FileUpload::make('tool_resumes_grid')->label('صورة الشبكة')->image()->directory('tools')->preserveFilenames(),
+                                        FileUpload::make('tool_resumes_list')->label('صورة القائمة')->image()->directory('tools')->preserveFilenames(),
+                                    ])->columns(2),
+                                Section::make('حلول البكالوريا')
+                                    ->schema([
+                                        FileUpload::make('tool_bac_solutions_grid')->label('صورة الشبكة')->image()->directory('tools')->preserveFilenames(),
+                                        FileUpload::make('tool_bac_solutions_list')->label('صورة القائمة')->image()->directory('tools')->preserveFilenames(),
+                                    ])->columns(2),
+                                Section::make('المؤقت البومودورو')
+                                    ->schema([
+                                        FileUpload::make('tool_pomodoro_grid')->label('صورة الشبكة')->image()->directory('tools')->preserveFilenames(),
+                                        FileUpload::make('tool_pomodoro_list')->label('صورة القائمة')->image()->directory('tools')->preserveFilenames(),
+                                    ])->columns(2),
+                                Section::make('حاسبة الدرجات')
+                                    ->schema([
+                                        FileUpload::make('tool_grade_calc_grid')->label('صورة الشبكة')->image()->directory('tools')->preserveFilenames(),
+                                        FileUpload::make('tool_grade_calc_list')->label('صورة القائمة')->image()->directory('tools')->preserveFilenames(),
+                                    ])->columns(2),
+                                Section::make('خطة الدراسة الذكية')
+                                    ->schema([
+                                        FileUpload::make('tool_ai_planner_grid')->label('صورة الشبكة')->image()->directory('tools')->preserveFilenames(),
+                                        FileUpload::make('tool_ai_planner_list')->label('صورة القائمة')->image()->directory('tools')->preserveFilenames(),
+                                    ])->columns(2),
+                            ]),
                     ]),
             ]);
     }

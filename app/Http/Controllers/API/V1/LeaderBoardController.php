@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API\V1;
 
 use App\Http\Controllers\API\BaseController;
+use App\Models\Badge;
 use App\Models\LeaderBoard;
 use App\Models\User;
 use Dedoc\Scramble\Attributes\Group;
@@ -29,13 +30,19 @@ class LeaderBoardController extends BaseController
 
         $leaderboardData = [];
         foreach ($leaderBoard as $item) {
+            $badge = $item->user->current_badge;
             $leaderboardData[] = [
                 'id' => $item->user->id,
                 'name' => $item->user->name,
-                'avatar_url' => config('app.url') . '/storage/' . $item->user->avatar_url,
+                'avatar_url' => $item->user->avatar_image,
                 'points' => $item->points,
-                'wilaya' => $item->user->wilaya ? $item->user->wilaya->arabic_name : null,
+                'wilaya' => $item->user->wilaya ? $item->user->wilaya->arabic_name : 'الجزائر',
                 'commune' => $item->user->commune ? $item->user->commune->arabic_name : null,
+                'badge' => $badge ? [
+                    'name' => $badge->name,
+                    'color' => $badge->color,
+                    'icon_url' => $badge->icon,
+                ] : null,
             ];
         }
         // Extract pagination metadata
