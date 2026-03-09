@@ -3,6 +3,7 @@
 namespace App\Filament\Admin\Resources;
 
 use App\Filament\Admin\AdminNavigation;
+use App\Filament\Admin\Clusters\AppCluster;
 use App\Filament\Admin\Resources\BannerResource\Pages;
 use App\Models\Banner;
 use Filament\Forms\Components\ColorPicker;
@@ -29,7 +30,7 @@ class BannerResource extends Resource
 
     public static function getNavigationGroup(): ?string
     {
-        return  __(AdminNavigation::BANNER_RESOURCE['group']);
+        return __(AdminNavigation::APP_SETTINGS_GROUP);
     }
 
     public static function getModelLabel(): string
@@ -49,7 +50,9 @@ class BannerResource extends Resource
 
     protected static ?string $navigationIcon = AdminNavigation::BANNER_RESOURCE['icon'];
 
-    protected static ?int $navigationSort = AdminNavigation::BANNER_RESOURCE['sort'];
+    protected static bool $shouldRegisterNavigation = false;
+
+    protected static ?int $navigationSort = 6;
 
     public static function form(Form $form): Form
     {

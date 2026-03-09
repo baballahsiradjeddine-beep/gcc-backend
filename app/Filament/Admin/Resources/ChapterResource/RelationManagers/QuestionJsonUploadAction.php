@@ -24,21 +24,160 @@ class QuestionJsonUploadAction
             ->modalDescription(__('custom.models.question.json_upload.modal_description'))
             ->modalSubmitActionLabel(__('custom.models.question.json_upload.submit_button'))
             ->form([
-                FilamentJsonColumn::make('json_data')
-                    ->label(__('custom.models.question.json_upload.json_data_label'))
-                    ->required()
-                    ->columnSpanFull()
-                    ->helperText(__('custom.models.question.json_upload.helper_text'))
-                    ->accent('#F037A5')
-                    ->viewerHeight(400)
-                    ->editorHeight(400)
-                    ->default('{}'),
+                \Filament\Forms\Components\Grid::make(5)->schema([
+                    \Filament\Forms\Components\Section::make([
+                        \Filament\Forms\Components\Textarea::make('json_data')
+                            ->label(__('custom.models.question.json_upload.json_data_label'))
+                            ->placeholder('[{ "question": "...", "question_type": "multiple_choices", ... }]')
+                            ->required()
+                            ->rows(20)
+                            ->live(debounce: 500)
+                            ->extraAttributes([
+                                'dir' => 'ltr',
+                                'style' => 'font-family: monospace; text-align: left;',
+                            ])
+                            ->hintActions([
+                                \Filament\Forms\Components\Actions\Action::make('format_json')
+                                    ->label('تنسيق الكود')
+                                    ->icon('heroicon-m-sparkles')
+                                    ->action(function ($state, $set) {
+                                        try {
+                                            $decoded = json_decode($state, true);
+                                            if ($decoded) {
+                                                $set('json_data', json_encode($decoded, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+                                            }
+                                        } catch (\Exception $e) {}
+                                    }),
+                                \Filament\Forms\Components\Actions\Action::make('generate_ai')
+                                    ->label('توليد بـ Gemini 🤖')
+                                    ->icon('heroicon-m-cpu-chip')
+                                    ->color('warning')
+                                    ->modalHeading('استخراج الأسئلة من الدرس (AI)')
+                                    ->modalSubmitActionLabel('بدء التوليد السحري 🚀')
+                                    ->form([
+                                        \Filament\Forms\Components\Grid::make(1)->schema([
+                                            \Filament\Forms\Components\FileUpload::make('pdf_document')
+                                                ->label('الدرس (مستند PDF)')
+                                                ->acceptedFileTypes(['application/pdf'])
+                                                ->maxSize(15360)
+                                                ->directory('temp_ai_uploads'),
+                                            
+                                            \Filament\Forms\Components\Textarea::make('text_content')
+                                                ->label('أو الصق النص هنا (بدون PDF)')
+                                                ->rows(4)
+                                                ->placeholder('محتوى الدرس...'),
+                                        ]),
+                                        \Filament\Forms\Components\Grid::make(2)->schema([
+                                            \Filament\Forms\Components\TextInput::make('question_count')
+                                                ->label('عدد الأسئلة المطلوبة')
+                                                ->numeric()
+                                                ->default(5)
+                                                ->minValue(1)
+                                                ->maxValue(20)
+                                                ->required(),
+                                                
+                                            \Filament\Forms\Components\Select::make('question_types')
+                                                ->label('نوع الأسئلة')
+                                                ->options([
+                                                    'mix' => 'تشكيلة عشوائية (كل الأنواع)',
+                                                    'multiple_choices' => 'بشكل أساسي: اختيار من متعدد',
+                                                    'true_or_false' => 'بشكل أساسي: صواب أو خطأ',
+                                                    'fill_in_the_blanks' => 'بشكل أساسي: املأ الفراغات',
+                                                ])
+                                                ->default('mix')
+                                                ->required(),
+                                        ]),
+                                        \Filament\Forms\Components\Textarea::make('extra_instructions')
+                                            ->label('تعليمات إضافية (اختياري)')
+                                            ->placeholder('مثال: اجعل الأسئلة صعبة...')
+                                            ->rows(2),
+                                    ])
+                                    ->action(function (array $data, callable $set) {
+                                        try {
+                                            $pdfPath = null;
+                                            if (!empty($data['pdf_document'])) {
+                                                $pdfPath = \Illuminate\Support\Facades\Storage::disk('public')->path($data['pdf_document']);
+                                            }
+                                            
+                                            $textContext = $data['text_content'] ?? null;
+                                            
+                                            if (!$pdfPath && !$textContext) {
+                                                \Filament\Notifications\Notification::make()
+                                                    ->title('تنبيه!')
+                                                    ->body('يرجى رفع ملف PDF أو لصق النص.')
+                                                    ->warning()
+                                                    ->send();
+                                                return;
+                                            }
+
+                                            // The service now handles dynamic instructions from the DB if available
+                                            $questions = \App\Services\GeminiAiService::generateQuestions(
+                                                $textContext, 
+                                                $pdfPath, 
+                                                (int) $data['question_count'], 
+                                                $data['question_types'],
+                                                $data['extra_instructions'] ?? null
+                                            );
+                                            
+                                            if (empty($questions)) {
+                                                \Filament\Notifications\Notification::make()
+                                                    ->title('عذراً')
+                                                    ->body('لم يقم الذكاء الاصطناعي بتوليد أي أسئلة صالحة.')
+                                                    ->danger()
+                                                    ->send();
+                                                return;
+                                            }
+
+                                            $set('json_data', json_encode($questions, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+                                            
+                                            \Filament\Notifications\Notification::make()
+                                                ->title('نجاح مبهر!')
+                                                ->body('تم استخراج الأسئلة وتوليد الكود بنجاح.')
+                                                ->success()
+                                                ->send();
+                                                
+                                        } catch (\Exception $e) {
+                                            \Filament\Notifications\Notification::make()
+                                                ->title('فشل الاتصال')
+                                                ->body($e->getMessage())
+                                                ->danger()
+                                                ->send();
+                                        }
+                                    }),
+                            ]),
+                    ])->columnSpan(2),
+
+                    \Filament\Forms\Components\Section::make([
+                        \Filament\Forms\Components\Placeholder::make('preview')
+                            ->hiddenLabel()
+                            ->content(function ($get) {
+                                $raw = $get('json_data');
+                                $questions = [];
+                                
+                                if (!empty($raw) && is_string($raw)) {
+                                    $parsed = json_decode($raw, true);
+                                    if (json_last_error() === JSON_ERROR_NONE && is_array($parsed)) {
+                                        $questions = isset($parsed['question']) ? [$parsed] : $parsed;
+                                    }
+                                }
+                                
+                                return view('filament.admin.components.questions-preview', [
+                                    'questions' => $questions,
+                                    'raw' => $raw,
+                                    'ownerRecord' => $get('../../..'),
+                                ]);
+                            }),
+                    ])->columnSpan(3),
+                ]),
             ])
+            ->modalWidth('7xl')
             ->action(function (array $data, $livewire) {
                 try {
-                    // Decode JSON
+                    // Decode JSON if it's a string
                     $jsonData = $data['json_data'];
-                    // $jsonData = json_decode($data['json_data'], true);
+                    if (is_string($jsonData)) {
+                        $jsonData = json_decode($jsonData, true);
+                    }
 
                     if (json_last_error() !== JSON_ERROR_NONE) {
                         Notification::make()

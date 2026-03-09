@@ -230,6 +230,7 @@ class QuestionsRelationManager extends RelationManager
                 //
             ])
             ->headerActions([
+                QuestionJsonTemplateAction::make(),
                 QuestionJsonUploadAction::make(),
                 Tables\Actions\CreateAction::make(),
             ])

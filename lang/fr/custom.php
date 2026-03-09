@@ -49,6 +49,8 @@ return [
     'nav.section.points' => 'Points',
     'nav.section.app' => 'L\'application',
     'nav.section.reports' => 'Rapports',
+    'nav.section.notifications' => 'Notifications',
+    'nav.section.app_settings' => 'Paramètres de l\'application',
 
     'models.cards' => 'Cartes (ancien)',
     'models.card' => 'Carte',
@@ -534,6 +536,7 @@ return [
     'models.question.json_upload.errors_title' => 'Certaines Questions ont Échoué',
     'models.question.json_upload.upload_failed' => 'Échec de l\'Import',
     'models.question.json_upload.error_message' => 'Une erreur est survenue : :error',
+    'models.question.json_upload.download_template' => 'Télécharger le modèle JSON',
 
     // # Flashcard JSON Upload
     'models.flashcard.json_upload.button' => 'Importer JSON',
@@ -615,4 +618,8 @@ return [
     'models.user.actions.remove_subscription' => "Supprimer l'abonnement",
     'models.user.actions.remove_subscription.confirm_description' => "Cela supprimera cet abonnement de l'utilisateur en supprimant sa carte d'abonnement. Continuer ?",
     'models.user.notices.subscription_removed' => 'Abonnement supprimé avec succès',
+    'settings.tabs.banners_assets' => 'Bannières et images',
+    'settings.tabs.tool_images' => 'Images des outils',
+    'settings.tabs.tour' => 'Tour d\'application',
+    'settings.tabs.platform' => 'Paramètres de la plateforme',
 ];

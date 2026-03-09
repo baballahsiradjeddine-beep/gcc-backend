@@ -2,10 +2,13 @@
 
 namespace App\Filament\Admin\Resources;
 
+use App\Filament\Admin\AdminNavigation;
+use App\Filament\Admin\Clusters\NotificationCluster;
 use App\Filament\Admin\Resources\AutomatedNotificationResource\Pages;
 use App\Models\AutomatedNotification;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Pages\SubNavigationPosition;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -14,11 +17,19 @@ class AutomatedNotificationResource extends Resource
 {
     protected static ?string $model = AutomatedNotification::class;
 
+    protected static ?string $cluster = NotificationCluster::class;
+
+    protected static SubNavigationPosition $subNavigationPosition = SubNavigationPosition::Top;
+
     protected static ?string $navigationIcon = 'heroicon-o-cpu-chip';
+    public static function getNavigationSort(): ?int
+    {
+        return AdminNavigation::AUTOMATED_NOTIFICATION_RESOURCE['sort'];
+    }
 
     public static function getNavigationGroup(): ?string
     {
-        return 'الإدارة';
+        return null;
     }
 
     public static function getNavigationLabel(): string

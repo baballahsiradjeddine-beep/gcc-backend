@@ -49,7 +49,9 @@ return [
     'nav.section.management' => 'Management',
     'nav.section.points' => 'Points',
     'nav.section.app' => 'The Application',
-    'nav.section.reports' =>  'Reports',
+    'nav.section.reports' => 'Reports',
+    'nav.section.notifications' => 'Notifications',
+    'nav.section.app_settings' => 'App Settings',
 
     'models.cards' => 'Cards (old)',
     'models.card' => 'Card',
@@ -426,6 +428,7 @@ return [
     'models.question.json_upload.errors_title' => 'Some Questions Failed',
     'models.question.json_upload.upload_failed' => 'Upload Failed',
     'models.question.json_upload.error_message' => 'An error occurred: :error',
+    'models.question.json_upload.download_template' => 'Download JSON Template',
 
     // # Flashcard JSON Upload
     'models.flashcard.json_upload.button' => 'Upload JSON',
@@ -617,4 +620,8 @@ return [
     'models.user.actions.remove_subscription' => 'Remove subscription',
     'models.user.actions.remove_subscription.confirm_description' => 'This will remove this subscription from the user by deleting its subscription card. Proceed?',
     'models.user.notices.subscription_removed' => 'Subscription removed successfully',
+    'settings.tabs.banners_assets' => 'Banners & Assets',
+    'settings.tabs.tool_images' => 'Tool Images',
+    'settings.tabs.tour' => 'App Tour',
+    'settings.tabs.platform' => 'Platform Settings',
 ];

@@ -38,21 +38,26 @@ class AdminPanelProvider extends PanelProvider
             ->darkModeBrandLogo(fn() => view('components.brand-dark'))
             ->brandLogoHeight('2rem')
             ->favicon(asset(('favicon.svg')))
+            ->brandName('EduTech Admin')
             ->colors([
-                'primary' => Color::Indigo,
+                'primary' => Color::Violet,
                 'success' => Color::Emerald,
-                'warning' => Color::Orange,
+                'warning' => Color::Amber,
                 'danger' => Color::Rose,
-                'info' => Color::Blue,
-                'gray' => Color::Slate,
+                'info' => Color::Cyan,
+                'gray' => Color::Zinc,
             ])
             ->databaseNotifications()
             ->databaseNotificationsPolling("30s")
             ->lazyLoadedDatabaseNotifications(false)
-            ->font('Outfit')
+            ->font('Cairo')
             ->globalSearchKeyBindings(['command+k', 'ctrl+k'])
+            ->sidebarWidth('18rem')
+            ->collapsedSidebarWidth('4rem')
+            ->sidebarCollapsibleOnDesktop()
             ->discoverResources(in: app_path('Filament/Admin/Resources'), for: 'App\\Filament\\Admin\\Resources')
             ->discoverPages(in: app_path('Filament/Admin/Pages'), for: 'App\\Filament\\Admin\\Pages')
+            ->discoverClusters(in: app_path('Filament/Admin/Clusters'), for: 'App\\Filament\\Admin\\Clusters')
             ->pages([
                 // Pages\Dashboard::class,
             ])

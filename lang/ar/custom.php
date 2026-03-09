@@ -52,6 +52,8 @@ return [
     'nav.section.points' => 'النقاط',
     'nav.section.app' => 'التطبيق',
     'nav.section.reports' =>  'التقارير',
+    'nav.section.notifications' => 'الإشعارات',
+    'nav.section.app_settings' => 'إعدادات التطبيق',
 
     'models.cards' => 'البطاقات (قديم)',
     'models.card' => 'بطاقة',
@@ -534,6 +536,7 @@ return [
     'models.question.json_upload.errors_title' => 'فشل بعض الأسئلة',
     'models.question.json_upload.upload_failed' => 'فشل الرفع',
     'models.question.json_upload.error_message' => 'حدث خطأ: :error',
+    'models.question.json_upload.download_template' => 'تحميل قالب JSON',
 
     // # Flashcard JSON Upload
     'models.flashcard.json_upload.button' => 'رفع JSON',
@@ -626,5 +629,9 @@ return [
     'settings.tito.social_links' => 'روابط ومواقع التواصل',
     'settings.tito.strict_mode' => 'منع الأسئلة خارج نطاق الدراسة',
     'settings.tito.strict_mode_hint' => 'تفعيل هذا الخيار سيجعل تيتو يرفض الإجابة عن أي سؤال غير تعليمي.',
+    'settings.tabs.banners_assets' => 'إدارة البانرات و صور التطبيق',
+    'settings.tabs.tool_images' => 'صور الأدوات',
+    'settings.tabs.tour' => 'الجولة التجريبية',
+    'settings.tabs.platform' => 'إعدادات المنصة',
 
 ];

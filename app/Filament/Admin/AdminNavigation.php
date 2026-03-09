@@ -12,6 +12,8 @@ class AdminNavigation
     public const POINTS_GROUP = 'custom.nav.section.points';
     public const APP_GROUP = 'custom.nav.section.app';
     public const REPORTS_GROUP = 'custom.nav.section.reports';
+    public const NOTIFICATIONS_GROUP = 'custom.nav.section.notifications';
+    public const APP_SETTINGS_GROUP = 'custom.nav.section.app_settings';
 
     public const PLATFORM_SETTINGS = [
         'icon' => 'heroicon-o-globe-alt',
@@ -21,14 +23,14 @@ class AdminNavigation
 
     public const APP_SETTINGS = [
         'icon' => 'heroicon-o-cog-6-tooth',
-        'sort' => 2,
-        'group' => self::APP_GROUP,
+        'sort' => 1,
+        'group' => self::APP_SETTINGS_GROUP,
     ];
 
     public const BANNER_RESOURCE = [
         'icon' => 'heroicon-o-photo',
-        'sort' => 3,
-        'group' => self::APP_GROUP,
+        'sort' => 4,
+        'group' => self::APP_SETTINGS_GROUP,
     ];
 
     public const USERS = [
@@ -109,6 +111,18 @@ class AdminNavigation
         'group' => self::CONTENT_GROUP,
     ];
 
+    public const GEMINI_SETTING_RESOURCE = [
+        'icon' => "heroicon-o-cpu-chip",
+        'sort' => 16,
+        'group' => self::CONTENT_GROUP,
+    ];
+
+    public const GEMINI_CHAT_PAGE = [
+        'icon' => "heroicon-o-chat-bubble-left-right",
+        'sort' => 17,
+        'group' => self::CONTENT_GROUP,
+    ];
+
     public const QUESTION_REPORT_RESOURCE = [
         'icon' => "heroicon-o-rectangle-stack",
         'sort' => 16,
@@ -119,5 +133,41 @@ class AdminNavigation
         'icon' => 'heroicon-o-envelope',
         'sort' => 17,
         'group' => self::REPORTS_GROUP,
+    ];
+
+    public const AUTOMATED_NOTIFICATION_RESOURCE = [
+        'icon' => 'heroicon-o-cpu-chip',
+        'sort' => 2,
+        'group' => self::NOTIFICATIONS_GROUP,
+    ];
+
+    public const FCM_LOG_RESOURCE = [
+        'icon' => 'heroicon-o-document-magnifying-glass',
+        'sort' => 3,
+        'group' => self::NOTIFICATIONS_GROUP,
+    ];
+
+    public const MANAGE_NOTIFICATIONS_PAGE = [
+        'icon' => 'heroicon-o-chat-bubble-bottom-center-text',
+        'sort' => 1,
+        'group' => self::NOTIFICATIONS_GROUP,
+    ];
+
+    public const NOTIFICATION_CLUSTER = [
+        'icon' => 'heroicon-o-bell',
+        'sort' => 1,
+        'group' => self::NOTIFICATIONS_GROUP,
+    ];
+
+    public const APP_ASSET_RESOURCE = [
+        'icon' => 'heroicon-o-photo',
+        'sort' => 3,
+        'group' => self::APP_SETTINGS_GROUP,
+    ];
+
+    public const PLATFORM_SETTINGS_PAGE = [
+        'icon' => 'heroicon-o-globe-alt',
+        'sort' => 2,
+        'group' => self::APP_SETTINGS_GROUP,
     ];
 }

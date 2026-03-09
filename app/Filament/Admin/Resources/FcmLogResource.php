@@ -2,11 +2,14 @@
 
 namespace App\Filament\Admin\Resources;
 
+use App\Filament\Admin\AdminNavigation;
+use App\Filament\Admin\Clusters\NotificationCluster;
 use App\Filament\Admin\Resources\FcmLogResource\Pages;
 use App\Filament\Admin\Resources\FcmLogResource\RelationManagers;
 use App\Models\FcmLog;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Pages\SubNavigationPosition;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -15,13 +18,20 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class FcmLogResource extends Resource
 {
-    protected static ?string $model = FcmLog::class;
+    protected static ?string $cluster = NotificationCluster::class;
+
+    protected static SubNavigationPosition $subNavigationPosition = SubNavigationPosition::Top;
 
     protected static ?string $navigationIcon = 'heroicon-o-document-magnifying-glass';
 
+    public static function getNavigationSort(): ?int
+    {
+        return AdminNavigation::FCM_LOG_RESOURCE['sort'];
+    }
+
     public static function getNavigationGroup(): ?string
     {
-        return 'الإدارة'; // Same group as ManageNotifications hopefully or general Administration
+        return null;
     }
 
     public static function getNavigationLabel(): string

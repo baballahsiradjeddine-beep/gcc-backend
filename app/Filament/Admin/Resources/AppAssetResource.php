@@ -3,6 +3,7 @@
 namespace App\Filament\Admin\Resources;
 
 use App\Filament\Admin\AdminNavigation;
+use App\Filament\Admin\Clusters\AppCluster;
 use App\Filament\Admin\Resources\AppAssetResource\Pages;
 use App\Models\AppAsset;
 use Filament\Forms\Components\FileUpload;
@@ -30,7 +31,7 @@ class AppAssetResource extends Resource
 
     public static function getNavigationGroup(): ?string
     {
-        return __(AdminNavigation::APP_GROUP);
+        return __(AdminNavigation::APP_SETTINGS_GROUP);
     }
 
     public static function getModelLabel(): string
@@ -45,7 +46,9 @@ class AppAssetResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-photo';
 
-    protected static ?int $navigationSort = 3;
+    protected static bool $shouldRegisterNavigation = false;
+
+    protected static ?int $navigationSort = 5;
 
     public static function form(Form $form): Form
     {
