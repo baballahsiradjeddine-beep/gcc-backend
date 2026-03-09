@@ -37,6 +37,7 @@ class QuestionJsonUploadAction
                                 'style' => 'font-family: monospace; text-align: left;',
                             ])
                             ->hintActions([
+                                // ... (actions remains same)
                                 \Filament\Forms\Components\Actions\Action::make('format_json')
                                     ->label('تنسيق الكود')
                                     ->icon('heroicon-m-sparkles')
@@ -96,7 +97,28 @@ class QuestionJsonUploadAction
                                         try {
                                             $pdfPath = null;
                                             if (!empty($data['pdf_document'])) {
-                                                $pdfPath = \Illuminate\Support\Facades\Storage::disk('public')->path($data['pdf_document']);
+                                                $rawPath = is_array($data['pdf_document']) ? reset($data['pdf_document']) : $data['pdf_document'];
+                                                
+                                                // Robust Check
+                                                $pdfPath = \Illuminate\Support\Facades\Storage::disk('public')->path($rawPath);
+                                                if (!file_exists($pdfPath)) {
+                                                    $cleanHash = str_replace('livewire-file:', '', (string)$rawPath);
+                                                    $possibleDirs = [
+                                                        storage_path('app/livewire-tmp'),
+                                                        storage_path('app/public/livewire-tmp'),
+                                                        storage_path('app/public/temp_ai_uploads'),
+                                                    ];
+                                                    foreach ($possibleDirs as $dir) {
+                                                        if (file_exists($dir)) {
+                                                            foreach (\Illuminate\Support\Facades\File::files($dir) as $f) {
+                                                                if (str_contains($f->getFilename(), $cleanHash)) {
+                                                                    $pdfPath = $f->getRealPath();
+                                                                    break 2;
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
                                             }
                                             
                                             $textContext = $data['text_content'] ?? null;
@@ -145,7 +167,8 @@ class QuestionJsonUploadAction
                                         }
                                     }),
                             ]),
-                    ])->columnSpan(2),
+                    ])
+                    ->columnSpan(2),
 
                     \Filament\Forms\Components\Section::make([
                         \Filament\Forms\Components\Placeholder::make('preview')
@@ -167,7 +190,8 @@ class QuestionJsonUploadAction
                                     'ownerRecord' => $get('../../..'),
                                 ]);
                             }),
-                    ])->columnSpan(3),
+                    ])
+                    ->columnSpan(3),
                 ]),
             ])
             ->modalWidth('7xl')

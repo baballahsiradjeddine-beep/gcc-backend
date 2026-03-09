@@ -1,99 +1,71 @@
 @import "/vendor/filament/filament/resources/css/theme.css";
-@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Readex+Pro:wght@200..700&display=swap');
 @source '../../../../vendor/bezhansalleh/filament-language-switch/resources/views/**/*.blade.php';
 
 @config 'tailwind.config.js';
 
-/* Global Aesthetics */
-:root {
-    --primary-glow: rgba(139, 92, 246, 0.15); /* Violet glow */
+[dir="rtl"],
+[dir="rtl"] * {
+    font-family: 'Readex Pro', sans-serif !important;
 }
 
-* {
-    font-family: 'Cairo', sans-serif !important;
+.fi-sidebar-header {
+    /* @apply ring-0; */
 }
 
-body {
-    @apply bg-slate-50 dark:bg-slate-950 transition-colors duration-500;
-}
-
-/* Modern Card & Sections */
-.fi-wi, 
-.fi-section,
-.fi-ta-ctn,
-.fi-fo-card {
-    @apply shadow-sm ring-1 ring-slate-200/50 dark:ring-white/5 rounded-2xl !important;
-    @apply bg-white dark:bg-slate-900/40 backdrop-blur-sm transition-all duration-300;
-    padding: 1rem;
-}
-
-.fi-wi:hover, 
-.fi-section:hover {
-    @apply shadow-xl shadow-slate-200/50 dark:shadow-none ring-slate-300 dark:ring-white/10;
-    transform: translateY(-2px);
-}
-
-/* Glassmorphism Header & Topbar */
-.fi-topbar {
-    @apply border-b border-white/10 dark:border-white/5 shadow-sm bg-white/80 dark:bg-slate-950/80 backdrop-blur-xl !important;
-    height: 4.5rem;
-}
-
-/* Enhanced Sidebar Layout */
 .fi-sidebar {
-    @apply bg-white dark:bg-slate-950 border-r border-slate-200 dark:border-white/5 shadow-none !important;
-    @apply transition-all duration-300;
+    /* @apply dark:bg-gray-900 bg-white dark:ring-white/10 ring-gray-950/5; */
 }
 
 .fi-sidebar-nav {
-    @apply bg-transparent space-y-1 px-3 !important;
+    @apply bg-white dark:bg-gray-900 shadow-sm ring-1 ring-gray-950/5 dark:ring-white/10 my-1 rounded-sm;
 }
 
-.fi-sidebar-group {
-    @apply mb-4 !important;
+.fi-btn {}
+
+.fi-badge {}
+
+.fi-body {}
+
+/* fi-body fi-panel-dashboard {
+
+} */
+.fi-panel-dashboard {
+    @apply bg-slate-50 dark:bg-slate-950 !important;
 }
 
-.fi-sidebar-item {
-    @apply rounded-xl transition-all duration-200 !important;
+/* Sleek Widgets & Cards */
+.fi-wi,
+.fi-ta-ctn {
+    @apply shadow-sm ring-1 ring-slate-200/50 dark:ring-white/5 rounded-2xl !important;
+    transition: all 0.2s ease-in-out;
 }
 
-.fi-sidebar-item:hover {
-    @apply bg-violet-50/50 dark:bg-violet-900/10 !important;
+.fi-wi:hover {
+    @apply shadow-md;
 }
 
-.fi-sidebar-item-active {
-    @apply bg-violet-600 shadow-lg shadow-violet-600/20 text-white !important;
+/* Glassmorphism Header */
+.fi-topbar {
+    @apply border-b border-transparent dark:border-white/5 shadow-sm bg-white/70 dark:bg-gray-900/70 backdrop-blur-lg !important;
 }
 
-/* Sleek Buttons */
-.fi-btn {
-    @apply rounded-xl font-bold transition-all duration-200 hover:scale-[1.02] active:scale-95 !important;
+/* Clean up sidebar */
+.fi-sidebar {
+    @apply bg-white dark:bg-gray-900 border-r border-slate-200 dark:border-white/5 shadow-none !important;
 }
 
-.fi-btn-primary {
-    @apply shadow-lg shadow-violet-600/20 !important;
+.fi-sidebar-nav {
+    @apply bg-transparent shadow-none ring-0 !important;
 }
 
-/* Table Refinements */
-.fi-ta-header {
-    @apply bg-slate-50/50 dark:bg-white/5 border-b border-slate-200 dark:border-white/5 !important;
+
+/* Sidebar Transition */
+.fi-sidebar {
+    transition: width 0.2s ease-in-out !important;
 }
 
-.fi-ta-row {
-    @apply transition-all duration-150 !important;
-}
-
+/* Styled Table Rows */
 .fi-ta-row:hover {
-    @apply bg-violet-50/30 dark:bg-violet-900/5 !important;
-}
-
-/* Better Form Inputs */
-.fi-fo-input {
-    @apply rounded-xl border-slate-200 dark:border-white/10 focus:ring-violet-500 focus:border-violet-500 !important;
-}
-
-/* Primary Color Glows */
-.fi-ac-action[data-color="primary"],
-.fi-fo-wizard-step-active-icon {
-    filter: drop-shadow(0 0 8px var(--primary-glow));
+    @apply bg-slate-50 dark:bg-white/5 transition-colors duration-150;
 }

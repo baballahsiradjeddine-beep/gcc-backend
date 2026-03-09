@@ -38,23 +38,19 @@ class AdminPanelProvider extends PanelProvider
             ->darkModeBrandLogo(fn() => view('components.brand-dark'))
             ->brandLogoHeight('2rem')
             ->favicon(asset(('favicon.svg')))
-            ->brandName('EduTech Admin')
             ->colors([
-                'primary' => Color::Violet,
+                'primary' => Color::Indigo,
                 'success' => Color::Emerald,
-                'warning' => Color::Amber,
+                'warning' => Color::Orange,
                 'danger' => Color::Rose,
-                'info' => Color::Cyan,
-                'gray' => Color::Zinc,
+                'info' => Color::Blue,
+                'gray' => Color::Slate,
             ])
             ->databaseNotifications()
             ->databaseNotificationsPolling("30s")
             ->lazyLoadedDatabaseNotifications(false)
-            ->font('Cairo')
+            ->font('Readex Pro')
             ->globalSearchKeyBindings(['command+k', 'ctrl+k'])
-            ->sidebarWidth('18rem')
-            ->collapsedSidebarWidth('4rem')
-            ->sidebarCollapsibleOnDesktop()
             ->discoverResources(in: app_path('Filament/Admin/Resources'), for: 'App\\Filament\\Admin\\Resources')
             ->discoverPages(in: app_path('Filament/Admin/Pages'), for: 'App\\Filament\\Admin\\Pages')
             ->discoverClusters(in: app_path('Filament/Admin/Clusters'), for: 'App\\Filament\\Admin\\Clusters')
@@ -82,8 +78,6 @@ class AdminPanelProvider extends PanelProvider
             ])
 
             ->sidebarCollapsibleOnDesktop()
-            ->sidebarFullyCollapsibleOnDesktop()
-            ->maxContentWidth(MaxWidth::Full)
             ->authMiddleware([
                 Authenticate::class,
             ])->plugins([
@@ -109,6 +103,42 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->spa()
             // ->darkMode(false)
+            ->renderHook('panels::scripts.after', fn (): string => Blade::render('
+                <script>
+                    (function() {
+                        const getSidebar = () => document.querySelector(".fi-sidebar-nav");
+                        
+                        // Save scroll BEFORE any navigation starts
+                        const saveScroll = () => {
+                            const sidebar = getSidebar();
+                            if (sidebar) sessionStorage.setItem("sidebar-scroll", sidebar.scrollTop);
+                        };
+
+                        // Restore scroll IMMEDIATELY after navigation
+                        const restoreScroll = () => {
+                            const sidebar = getSidebar();
+                            const saved = sessionStorage.getItem("sidebar-scroll");
+                            if (sidebar && saved) {
+                                sidebar.scrollTop = parseInt(saved);
+                                // Double check after a frame to be absolutely sure
+                                requestAnimationFrame(() => {
+                                    sidebar.scrollTop = parseInt(saved);
+                                });
+                            }
+                        };
+
+                        document.addEventListener("livewire:navigating", saveScroll);
+                        document.addEventListener("livewire:navigated", restoreScroll);
+                        
+                        // Save on manual scroll too
+                        window.addEventListener("scroll", (e) => {
+                            if (e.target.classList && e.target.classList.contains("fi-sidebar-nav")) {
+                                sessionStorage.setItem("sidebar-scroll", e.target.scrollTop);
+                            }
+                        }, true);
+                    })();
+                </script>
+            '))
             ->renderHook('panels::body.end', fn(): string => Blade::render("@vite('resources/js/app.js')"))
             ->viteTheme('resources/css/filament/dashboard/theme.css');
     }

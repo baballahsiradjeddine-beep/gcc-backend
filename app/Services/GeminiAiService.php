@@ -8,154 +8,154 @@ use Illuminate\Support\Facades\Log;
 class GeminiAiService
 {
     /**
-     * Generate interactive questions from a given text or PDF content using Gemini API.
+     * Main method to call Gemini API
      */
-    public static function generateQuestions(?string $textContext, ?string $pdfFilePath, int $count, string $types, ?string $fullPromptOverride = null): array
+    protected static function callGemini(string $prompt, ?string $textContext = null, ?string $pdfFilePath = null, bool $expectJson = false, ?string $modelOverride = null): array|string
     {
+        // 1. Get API Key
         $dbKey = \App\Models\GeminiSetting::where('key', 'api_key')->first()?->value;
-        $apiKey = $dbKey ?: env('GEMINI_API_KEY');
+        $apiKey = trim($dbKey ?: env('GEMINI_API_KEY'));
         
-        if (!$apiKey) {
-            throw new \Exception('GEMINI_API_KEY is not configured. Please add it in settings or .env file.');
+        if (empty($apiKey)) {
+            throw new \Exception('مفتاح الـ API غير موجود. يرجى إضافته في الإعدادات.');
         }
 
-        $prompt = $fullPromptOverride ?: self::getSystemPromptTemplate($count, $types);
-        
-        $parts = [];
-        $parts[] = [
-            'text' => $prompt
-        ];
-
+        // 2. Build Parts
+        $parts = [['text' => $prompt]];
         if (!empty($textContext)) {
-            $parts[] = [
-                'text' => "--- CONTENT TO ANALYZE ---\n" . $textContext
-            ];
+            $parts[] = ['text' => "--- CONTEXT ---\n" . $textContext];
         }
 
-        if (!empty($pdfFilePath) && file_exists($pdfFilePath)) {
-            $mimeType = mime_content_type($pdfFilePath);
-            $base64Data = base64_encode(file_get_contents($pdfFilePath));
-            
-            $parts[] = [
-                'inline_data' => [
-                    'mime_type' => $mimeType ?: 'application/pdf',
-                    'data' => $base64Data
-                ]
-            ];
+        if (!empty($pdfFilePath)) {
+            if (file_exists($pdfFilePath)) {
+                $fileSize = filesize($pdfFilePath);
+                Log::info("Gemini: Attaching PDF", ['path' => $pdfFilePath, 'size' => $fileSize]);
+                
+                $parts[] = [
+                    'inline_data' => [
+                        'mime_type' => 'application/pdf',
+                        'data' => base64_encode(file_get_contents($pdfFilePath))
+                    ]
+                ];
+            } else {
+                Log::error("Gemini: PDF File NOT FOUND", ['path' => $pdfFilePath]);
+                throw new \Exception("لم يتم العثور على ملف الـ PDF في المسار: " . $pdfFilePath);
+            }
         }
 
+        // 3. Determine Model
+        $dbModel = \App\Models\GeminiSetting::where('key', 'model_name')->first()?->value;
+        $modelInput = trim($modelOverride ?: ($dbModel ?: 'gemini-2.0-flash'));
+        $cleanModel = ltrim(str_replace('models/', '', $modelInput), '/');
+        
+        // Use v1beta for everything as it's the most compatible with both 1.5 and 2.x models
+        $url = "https://generativelanguage.googleapis.com/v1beta/models/{$cleanModel}:generateContent?key={$apiKey}";
+
+        // 4. Build Payload
         $payload = [
-            'contents' => [
-                [
-                    'role' => 'user',
-                    'parts' => $parts
-                ]
-            ],
+            'contents' => [['role' => 'user', 'parts' => $parts]],
             'generationConfig' => [
-                'response_mime_type' => 'application/json',
-                'temperature' => 0.4
+                'temperature' => 0.4,
             ]
         ];
 
-        // Get the model from DB or fallback to flash
-        $dbModel = \App\Models\GeminiSetting::where('key', 'model_name')->first()?->value;
-        $model = $dbModel ?: 'gemini-1.5-flash';
-
-        // We use the selected model from settings
-        $url = "https://generativelanguage.googleapis.com/v1beta/models/{$model}:generateContent?key={$apiKey}";
-
-        $response = Http::withHeaders([
-            'Content-Type' => 'application/json'
-        ])
-        ->timeout(60) // it might take a while to read big PDFs
-        ->post($url, $payload);
-
-        if (!$response->successful()) {
-            Log::error('Gemini API Error', ['response' => $response->body()]);
-            throw new \Exception('فشل الاتصال بـ Gemini API: ' . $response->status() . ' - ' . $response->body());
+        // Only add response_mime_type if we're actually expecting JSON
+        if ($expectJson) {
+            $payload['generationConfig']['response_mime_type'] = 'application/json';
         }
 
+        // 5. Execute Request
+        $response = Http::withHeaders(['Content-Type' => 'application/json'])
+            ->timeout(120)
+            ->post($url, $payload);
+
+        if (!$response->successful()) {
+            $status = $response->status();
+            $body = $response->body();
+            Log::error("Gemini API Error", ['status' => $status, 'body' => $body]);
+
+            if ($status === 404) {
+                throw new \Exception("الموديل ({$cleanModel}) غير متوفر. تأكد من صحة الاسم في الإعدادات.");
+            }
+            if ($status === 400 && str_contains($body, 'API_KEY_INVALID')) {
+                throw new \Exception("مفتاح الـ API غير صالح.");
+            }
+            
+            throw new \Exception("خطأ في الاتصال ({$status}): " . ($response->json()['error']['message'] ?? 'فشل الاتصال بجوجل'));
+        }
+
+        // 6. Parse Result
         $result = $response->json();
-        
         $text = $result['candidates'][0]['content']['parts'][0]['text'] ?? '';
-        
-        // Extract the JSON array from the response. 
-        // Gemini sometimes includes conversational text before or after the JSON block.
+
+        if (!$expectJson) return $text;
+
+        // Extract JSON if it exists in markdown blocks
         if (preg_match('/\[\s*\{.*\}\s*\]/s', $text, $matches)) {
             $text = $matches[0];
         } else {
-            // Fallback: remove markdown wrappers if present
-            $text = preg_replace('/```json\s*/', '', $text);
-            $text = preg_replace('/```\s*/', '', $text);
-            $text = trim($text);
+            $text = trim(preg_replace('/^```json\s*|```\s*$/', '', $text));
         }
-        
-        $decoded = json_decode($text, true, 512, JSON_INVALID_UTF8_SUBSTITUTE);
-        
+
+        $decoded = json_decode($text, true);
         if (json_last_error() !== JSON_ERROR_NONE) {
-            Log::error('Gemini Invalid JSON', [
-                'error_msg' => json_last_error_msg(),
-                'raw_text_length' => strlen($text),
-                'raw_text_start' => substr($text, 0, 50),
-                'raw_text_end' => substr($text, -50),
-                'full_text' => $text
-            ]);
-            throw new \Exception('لم يقم Gemini بإرجاع كود JSON صالح: ' . json_last_error_msg());
+            throw new \Exception('فشل في تحليل بيانات الـ JSON المستلمة.');
         }
 
         return $decoded;
     }
 
     /**
-     * Simple chat interaction with Gemini
+     * Simple chat interface
      */
-    public static function chat(string $prompt, string $model = 'gemini-1.5-flash'): string
+    public static function chat(string $prompt, ?string $model = null): string
     {
-        $dbKey = \App\Models\GeminiSetting::where('key', 'api_key')->first()?->value;
-        $apiKey = $dbKey ?: env('GEMINI_API_KEY');
-
-        if (!$apiKey) {
-            throw new \Exception('Gemini API Key is not configured.');
+        try {
+            return self::callGemini($prompt, null, null, false, $model);
+        } catch (\Exception $e) {
+            return "Error: " . $e->getMessage();
         }
-
-        $url = "https://generativelanguage.googleapis.com/v1beta/models/{$model}:generateContent?key={$apiKey}";
-
-        $response = Http::withHeaders([
-            'Content-Type' => 'application/json'
-        ])->post($url, [
-            'contents' => [
-                [
-                    'parts' => [
-                        ['text' => $prompt]
-                    ]
-                ]
-            ],
-            'generationConfig' => [
-                'temperature' => 0.7,
-                'topK' => 40,
-                'topP' => 0.95,
-                'maxOutputTokens' => 2048,
-            ]
-        ]);
-
-        if ($response->failed()) {
-            throw new \Exception('Gemini API Error: ' . ($response->json()['error']['message'] ?? $response->body()));
-        }
-
-        $result = $response->json();
-        return $result['candidates'][0]['content']['parts'][0]['text'] ?? 'No response from Gemini.';
     }
 
     /**
-     * Fetch confirmed free models for the user
+     * Specialized methods for content generation
+     */
+    public static function analyzePdfForChapters(string $pdfFilePath, ?string $extraInstructions = null): array
+    {
+        $dbSetting = \App\Models\GeminiSetting::where('key', 'unit_analysis_prompt')->first();
+        $prompt = ($dbSetting && !empty($dbSetting->value)) ? $dbSetting->value : "I have attached a study document (PDF). Please analyze it and suggest a logical structure to divide it into multiple chapters or lessons. For each chapter, provide a clear Arabic title and a brief description of the topics covered in that chapter. Output ONLY a JSON array of objects: [{\"title\": \"...\", \"description\": \"...\", \"q_count\": 10}] in Arabic.";
+
+        if (!empty($extraInstructions)) {
+            $prompt .= "\n\nAdditional instructions for this analysis: " . $extraInstructions;
+        }
+
+        return self::callGemini($prompt, null, $pdfFilePath, true);
+    }
+
+    public static function generateQuestionsForChapter(string $pdfFilePath, string $chapterTitle, string $chapterDescription, int $count = 10): array
+    {
+        $prompt = self::getSystemPromptTemplate($count, 'mix');
+        $context = "Focus on chapter: \"{$chapterTitle}\". Description: {$chapterDescription}";
+
+        return self::callGemini($prompt, $context, $pdfFilePath, true);
+    }
+
+    public static function generateQuestions(?string $textContext, ?string $pdfFilePath, int $count, string $types): array
+    {
+        $prompt = self::getSystemPromptTemplate($count, $types);
+        return self::callGemini($prompt, $textContext ?? '', $pdfFilePath, true);
+    }
+
+    /**
+     * Utilities
      */
     public static function listModels(): array
     {
-        // We use a curated list of models confirmed to work on the free tier
-        // to avoid user confusion and "limit: 0" errors from experimental models.
         return [
-            'gemini-1.5-flash' => 'Gemini 1.5 Flash ✅ [باقة مجانية - سريع ومستقر]',
-            'gemini-1.5-pro'   => 'Gemini 1.5 Pro ✨ [باقة مجانية - ذكي وتحليلي]',
+            'gemini-2.0-flash' => 'Gemini 2.0 Flash 🚀 (الأحدث والأسرع)',
+            'gemini-2.0-flash-lite' => 'Gemini 2.0 Flash Lite ⚡ (خفيف واقتصادي)',
+            'gemini-2.5-flash' => 'Gemini 2.5 Flash ✨ (نسخة المعاينة المتطورة)',
+            'gemini-1.5-flash' => 'Gemini 1.5 Flash (إذا كان متاحاً)',
         ];
     }
 
@@ -164,7 +164,6 @@ class GeminiAiService
         $dbSetting = \App\Models\GeminiSetting::where('key', 'system_prompt')->first();
         $template = ($dbSetting && !empty($dbSetting->value)) ? $dbSetting->value : self::getDefaultTemplate();
 
-        // Standardize placeholders support
         $text = str_replace(['{count}', '{$count}'], $count, $template);
         $text = str_replace(['{types}', '{$types}'], $types, $text);
         
@@ -173,53 +172,6 @@ class GeminiAiService
 
     public static function getDefaultTemplate(): string
     {
-        return <<<PROMPT
-You are an expert educational content creator. I will provide you with a study document (PDF or text).
-Your task is to generate EXACTLY {count} interactive, high-quality questions based heavily on the content provided.
-
-The required question types should cover: {types}. (Mix them if "mix" is specified, otherwise stick to the requested type).
-
-CRITICAL RULE: YOU MUST OUTPUT ONLY VALID MINIFIED JSON ARRAY AS THE RESULT. NO MARKDOWN, NO EXPLANATORY TEXT.
-
-The JSON array must contain objects that EXACTLY match this structure:
-[
-  {
-    "question": "The main question text (in Arabic)",
-    "question_type": "multiple_choices" | "true_or_false" | "fill_in_the_blanks" | "pick_the_intruder" | "match_with_arrows",
-    "scope": "exercice",
-    "direction": "inherit",
-    "question_is_latex": false,
-    "explanation_text": "A detailed explanation of the correct answer (in Arabic)",
-    "explanation_text_is_latex": false,
-    "hint": [],
-    "options": {
-      // NOTE: format the options object exactly based on 'question_type' as explained below
-    }
-  }
-]
-
-=== Option Formats Rules based on 'question_type' ===
-1. If "multiple_choices":
-"options": {"choices": [ {"option": "Choice 1", "is_correct": true, "option_is_latex": false}, {"option": "Choice 2", "is_correct": false, "option_is_latex": false} ]}
-
-2. If "true_or_false":
-"options": {"correct": true}  (or false)
-
-3. If "fill_in_the_blanks":
-"options": {
-  "paragraph": "Water boils at [1] degrees Celsius.",
-  "blanks": [ {"id": 1, "answer": "100"} ],
-  "suggestions": ["50", "100", "0"]
-}
-
-4. If "pick_the_intruder":
-"options": {"words": [ {"word": "Apple", "is_intruder": false}, {"word": "Car", "is_intruder": true} ]}
-
-5. If "match_with_arrows":
-"options": {"pairs": [ {"first": "Paris", "second": "France"}, {"first": "Berlin", "second": "Germany"} ]}
-
-Generate the questions exclusively in ARABIC language.
-Make sure the JSON is 100% syntactically valid.
-PROMPT;
+        return "You are an educator. Generate {count} {types} questions in Arabic based on the content provided. Output only JSON array.";
     }
 }

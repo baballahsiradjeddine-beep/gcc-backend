@@ -60,13 +60,12 @@ class AppServiceProvider extends ServiceProvider
         LanguageSwitch::configureUsing(function (LanguageSwitch $switch) {
             $switch
                 ->locales(['ar', 'en', 'fr']); // also accepts a closure
-            // ->flags([
-            //     'ar' => asset('flags/algeria.svg'),
-            //     'fr' => asset('flags/france.svg'),
-            //     'en' => asset('flags/usa.svg'),
-            // ])
-            // ->circular()
         });
+
+        \Livewire\Livewire::component('edit_profile_form', \App\Livewire\EditProfileForm::class);
+        \Livewire\Livewire::component('edit_password_form', \App\Livewire\EditPasswordForm::class);
+        \Livewire\Livewire::component('delete_account_form', \App\Livewire\DeleteAccountForm::class);
+        \Livewire\Livewire::component('browser_sessions_form', \App\Livewire\BrowserSessionsForm::class);
     }
 
     private function configureScramble(): void

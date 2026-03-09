@@ -51,7 +51,8 @@ class GeminiSettingResource extends Resource
                             ->disabled()
                             ->required()
                             ->formatStateUsing(fn ($state) => match($state) {
-                                'system_prompt' => '🧠 الأمر البرمجي الأساسي (Prompt)',
+                                'system_prompt' => '🧠 الأمر البرمجي للأسئلة (System Prompt)',
+                                'unit_analysis_prompt' => '📚 الأمر البرمجي لتحليل الوحدات (Unit Analysis)',
                                 'api_key' => '🔑 مفتاح الـ API (Gemini Key)',
                                 'model_name' => '🤖 موديل الذكاء الاصطناعي (Model)',
                                 default => $state
@@ -84,9 +85,9 @@ class GeminiSettingResource extends Resource
                             ->required(),
 
                         Textarea::make('value')
-                            ->label('التعليمات (System Prompt)')
-                            ->rows(20)
-                            ->visible(fn ($record) => $record?->key === 'system_prompt')
+                            ->label('التعليمات')
+                            ->rows(15)
+                            ->visible(fn ($record) => in_array($record?->key, ['system_prompt', 'unit_analysis_prompt']))
                             ->required()
                             ->columnSpanFull(),
                     ]),
@@ -136,7 +137,9 @@ class GeminiSettingResource extends Resource
                 TextColumn::make('key')
                     ->label('نوع الإعداد')
                     ->formatStateUsing(fn ($state) => match($state) {
-                        'system_prompt' => '🧠 الأمر البرمجي الأساسي',
+                        'unit_analysis_prompt' => '📚 الأمر البرمجي لتحليل الوحدات',
+                        'system_prompt' => '🧠 الأمر البرمجي للأسئلة',
+                        'model_name' => '🤖 موديل الذكاء الاصطناعي',
                         'api_key' => '🔑 مفتاح الـ API',
                         default => $state
                     })
@@ -150,6 +153,7 @@ class GeminiSettingResource extends Resource
                     ->dateTime()
                     ->sortable(),
             ])
+            ->defaultSort('key', 'desc')
             ->filters([
                 //
             ])
