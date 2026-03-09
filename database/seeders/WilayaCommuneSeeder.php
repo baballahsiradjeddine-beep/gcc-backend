@@ -22,17 +22,26 @@ class WilayaCommuneSeeder extends Seeder
             Artisan::call('migrate');
         }
 
-        $wilayas = DB::table('wilayas')->count();
-        $communes = DB::table('communes')->count();
-
-        if (! $wilayas && ! $communes) {
-            $this->loadData();
-            $this->command->info('Success!! wilayas and communes are loaded successfully');
-
-            return;
+        $this->command->info('Truncating wilayas and communes tables...');
+        
+        $driver = DB::getDriverName();
+        if ($driver === 'sqlite') {
+            DB::statement('PRAGMA foreign_keys = OFF;');
+        } elseif ($driver === 'mysql' || $driver === 'mariadb') {
+            DB::statement('SET FOREIGN_KEY_CHECKS=0;');
         }
 
-        $this->command->comment('Wilayas/Communes already loaded');
+        DB::table('communes')->truncate();
+        DB::table('wilayas')->truncate();
+
+        if ($driver === 'sqlite') {
+            DB::statement('PRAGMA foreign_keys = ON;');
+        } elseif ($driver === 'mysql' || $driver === 'mariadb') {
+            DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+        }
+
+        $this->loadData();
+        $this->command->info('Success!! wilayas and communes are loaded successfully');
     }
 
     protected function loadData()
@@ -53,6 +62,8 @@ class WilayaCommuneSeeder extends Seeder
         $data = [];
         foreach ($wilayas_json as $wilaya) {
             $data[] = [
+                'id' => $wilaya->id,
+                'code' => $wilaya->code ?? null,
                 'name' => $wilaya->name,
                 'arabic_name' => $wilaya->ar_name,
                 'longitude' => $wilaya->longitude,
@@ -65,7 +76,7 @@ class WilayaCommuneSeeder extends Seeder
 
     protected function insertCommunes()
     {
-        // Load wilayas from json
+        // Load communes from json
         try {
             $communes_json = json_decode(file_get_contents(database_path('/seeders/json/Commune_Of_Algeria.json')));
         } catch (ErrorException $e) {
@@ -75,6 +86,7 @@ class WilayaCommuneSeeder extends Seeder
         $data = [];
         foreach ($communes_json as $commune) {
             $data[] = [
+                'id' => $commune->id,
                 'name' => $commune->name,
                 'arabic_name' => $commune->ar_name,
                 'post_code' => $commune->post_code,
@@ -84,6 +96,10 @@ class WilayaCommuneSeeder extends Seeder
                 'created_at' => now(),
             ];
         }
-        DB::table('communes')->insert($data);
+
+        // Insert in chunks to avoid memory/query limits
+        foreach (array_chunk($data, 100) as $chunk) {
+            DB::table('communes')->insert($chunk);
+        }
     }
 }
