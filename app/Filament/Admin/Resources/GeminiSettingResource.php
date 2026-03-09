@@ -27,12 +27,12 @@ class GeminiSettingResource extends Resource
 
     public static function getModelLabel(): string
     {
-        return 'إعدادات الذكاء الاصطناعي';
+        return 'إعدادات IA';
     }
 
     public static function getPluralModelLabel(): string
     {
-        return 'إعدادات الذكاء الاصطناعي';
+        return 'إعدادات IA';
     }
 
     protected static ?string $navigationIcon = 'heroicon-o-cpu-chip';
