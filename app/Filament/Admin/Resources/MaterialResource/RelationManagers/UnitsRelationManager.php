@@ -129,6 +129,7 @@ class UnitsRelationManager extends RelationManager
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                \App\Filament\Actions\AiDeepContentAction::make(),
                 Tables\Actions\LinkAction::make('Details')->label(__('custom.models.unit.action.details'))->icon('heroicon-o-eye')->color('secondary')->url(fn($record) => UnitResource::getUrl('edit', ['record' => $record])),
                 // Tables\Actions\DeleteAction::make(),
             ])

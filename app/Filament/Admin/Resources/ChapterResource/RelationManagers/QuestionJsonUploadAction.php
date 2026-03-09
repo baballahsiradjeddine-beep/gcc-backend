@@ -53,7 +53,7 @@ class QuestionJsonUploadAction
                                     ->label('توليد بـ Gemini 🤖')
                                     ->icon('heroicon-m-cpu-chip')
                                     ->color('warning')
-                                    ->modalHeading('استخراج الأسئلة من الدرس (AI)')
+                                    ->modalHeading('استخراج الأسئلة من الدرس (IA)')
                                     ->modalSubmitActionLabel('بدء التوليد السحري 🚀')
                                     ->form([
                                         \Filament\Forms\Components\Grid::make(1)->schema([
@@ -144,7 +144,7 @@ class QuestionJsonUploadAction
                                             if (empty($questions)) {
                                                 \Filament\Notifications\Notification::make()
                                                     ->title('عذراً')
-                                                    ->body('لم يقم الذكاء الاصطناعي بتوليد أي أسئلة صالحة.')
+                                                    ->body('لم يقم IA بتوليد أي أسئلة صالحة.')
                                                     ->danger()
                                                     ->send();
                                                 return;

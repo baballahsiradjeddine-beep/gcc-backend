@@ -146,6 +146,7 @@ class ChaptersRelationManager extends RelationManager
                 //
             ])
             ->headerActions([
+                \App\Filament\Actions\AiDeepContentAction::make(),
                 Tables\Actions\CreateAction::make(),
                 // Tables\Actions\AttachAction::make(),
             ])
