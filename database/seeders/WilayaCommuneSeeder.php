@@ -66,8 +66,9 @@ class WilayaCommuneSeeder extends Seeder
                 'code' => $wilaya->code ?? null,
                 'name' => $wilaya->name,
                 'arabic_name' => $wilaya->ar_name,
-                'longitude' => $wilaya->longitude,
-                'latitude' => $wilaya->latitude,
+                // Swapped these because the JSON has them reversed (Long > 20 is Lat in Algeria)
+                'longitude' => $wilaya->latitude, 
+                'latitude' => $wilaya->longitude,
                 'created_at' => now(),
             ];
         }
